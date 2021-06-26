@@ -1,5 +1,5 @@
 from itertools import combinations
-from time import time
+from cProfile import run
 
 
 class PokerEvaluator:
@@ -146,12 +146,10 @@ class PokerEvaluator:
 
 if __name__ == '__main__':
 	hand = {('A', 'h'), ('A', 's')}
-	base = {('3', 'h'), ('3', 's'), ('3', 'd')}
+	base = {('3', 'h'), ('3', 's'), ('3', 'd'), ('A', 'c'), ('A', 'd')}
 
-	s = time()
 	evaluator = PokerEvaluator()
 	evaluator.update_table(base)
 	evaluator.update_hand(hand)
-	result = evaluator.calculate_position()
-	took = time()-s
-	print('took:', took, 'minutes:', took/60, 'with multiprocessing it would take about:', took/4)
+	result = evaluator.calculate_position
+	run('result()', sort='cumtime')
