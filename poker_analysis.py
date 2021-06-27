@@ -66,15 +66,17 @@ class PokerEvaluator:
 		def check_consecutive_len5(cards5):
 			"""checks if ordered cards are incrementing by one"""
 			sorted_l = sorted(cards5)
-			consecutive_len5 = list(range(sorted_l[0], sorted_l[0] + 6))
+			f_of_l = sorted_l[0]
+			consecutive_len5 = list(range(f_of_l, f_of_l + 6))
 			return sorted_l == consecutive_len5
 
-		def check_if_colour_in_cards(cards):
-			colours = (colour for _, colour in cards)
-			for colour in self.COLOURS:
-				c = sum(colour == col for col in colours)
-				if c == 5:
-					return True
+		def check_if_colour_in_cards(cards5):
+			col1 = cards5[0][1]
+			for _, col in cards5:
+				if col != col1:
+					break
+			else:
+				return True
 
 		# we make a list of all cards as numbers based on their value
 		numbers = [self.CARD_VALUES[number] for number, _ in cards7]
@@ -88,7 +90,7 @@ class PokerEvaluator:
 		def update_hand_type_on_table(hand_type_index, value_of_hand_type):
 			nonlocal hand_types_on_table, value_of_type
 			hand_types_on_table[hand_type_index] = True
-			value_of_type[hand_type_index] = max(value_of_hand_type, value_of_type[hand_type_index])
+			value_of_type[hand_type_index] = value_of_hand_type
 
 		# check if poker or strit
 		for combination_of5 in combinations(cards7, 5):
@@ -99,7 +101,7 @@ class PokerEvaluator:
 			secondary = [] if 14 not in main else [1 if x == 14 else x for x in main]
 
 			if check_if_colour_in_cards(combination_of5):
-				update_hand_type_on_table(kolor, max_main)
+				update_hand_type_on_table(kolor, max(max_main, value_of_type[kolor]))
 				if check_consecutive_len5(main):
 					update_hand_type_on_table(poker, max_main)
 				elif secondary and check_consecutive_len5(secondary):
