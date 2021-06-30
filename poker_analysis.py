@@ -40,11 +40,14 @@ class PokerEvaluator:
 
 		for table_addition in combinations(self.deck, 5-len(self._table)):
 			full_table = self._table.union(table_addition)
-			our_cards_value = self.value_of_players_hand(full_table, self._hand)
-
 			rest_of_deck = self.deck - set(table_addition)
+
+			our_hand_type, our_val, our_highest_card = self.best_hand_type_from_seven_cards(full_table.union(self._hand))
+			our_cards_value = self.value_of_players_hand(our_hand_type, our_val, our_highest_card)
+
 			for enemy_cards in combinations(rest_of_deck, 2):
-				enemy_cards_value = self.value_of_players_hand(full_table, enemy_cards)
+				enemy_hand_type, enemy_val, enemy_highest_card = self.best_hand_type_from_seven_cards(full_table.union(enemy_cards))
+				enemy_cards_value = self.value_of_players_hand(enemy_hand_type, enemy_val, enemy_highest_card)
 				if our_cards_value > enemy_cards_value:
 					win += 1
 				elif our_cards_value == enemy_cards_value:
@@ -54,30 +57,7 @@ class PokerEvaluator:
 
 		return win, draw, loss
 
-	def value_of_players_hand(self, base, hand):
-		both_combined = base.union(hand)
-		hand_type, val, highest_card = self.best_hand_type_from_seven_cards(both_combined)
-		# hand type is an int representing index of type
-		# if hand type is strit, kolor, full or poker we do not add the highest card
-		count_highest_card = hand_type not in {4, 5, 6, 8}
-		return 1000 * hand_type + 10 * val + highest_card * count_highest_card
-
 	def best_hand_type_from_seven_cards(self, cards7):
-		def check_consecutive_len5(cards5):
-			"""checks if ordered cards are incrementing by one"""
-			sorted_l = sorted(cards5)
-			f_of_l = sorted_l[0]
-			consecutive_len5 = list(range(f_of_l, f_of_l + 6))
-			return sorted_l == consecutive_len5
-
-		def check_if_colour_in_cards(cards5):
-			col1 = cards5[0][1]
-			for _, col in cards5:
-				if col != col1:
-					break
-			else:
-				return True
-
 		# we make a list of all cards as numbers based on their value
 		numbers = [self.CARD_VALUES[number] for number, _ in cards7]
 		highest_card = max(numbers)
@@ -100,16 +80,16 @@ class PokerEvaluator:
 			# if there is an ase we have to look for two separate cases
 			secondary = [] if 14 not in main else [1 if x == 14 else x for x in main]
 
-			if check_if_colour_in_cards(combination_of5):
+			if self._check_if_colour_in_cards(combination_of5):
 				update_hand_type_on_table(kolor, max(max_main, value_of_type[kolor]))
-				if check_consecutive_len5(main):
+				if self._check_consecutive_len5(main):
 					update_hand_type_on_table(poker, max_main)
-				elif secondary and check_consecutive_len5(secondary):
+				elif secondary and self._check_consecutive_len5(secondary):
 					update_hand_type_on_table(poker, max(secondary))
 			else:
-				if check_consecutive_len5(main):
+				if self._check_consecutive_len5(main):
 					update_hand_type_on_table(strit, max_main)
-				elif secondary and check_consecutive_len5(secondary):
+				elif secondary and self._check_consecutive_len5(secondary):
 					update_hand_type_on_table(strit, max(secondary))
 
 		for number in set(numbers):
@@ -119,10 +99,8 @@ class PokerEvaluator:
 				update_hand_type_on_table(kareta, number)
 
 			elif count == 3:
-				# if "para" on the table
 				if hand_types_on_table[para]:
 					update_hand_type_on_table(full, number * 3 + value_of_type[para] * 2)
-				# if "trójka" on the table
 				elif hand_types_on_table[trojka]:
 					other_three = value_of_type[trojka]
 					update_hand_type_on_table(full, max(other_three, number) * 3 + min(other_three, number) * 2)
@@ -130,10 +108,19 @@ class PokerEvaluator:
 					update_hand_type_on_table(trojka, number)
 
 			elif count == 2:
-				# if "para" on the table
-				if hand_types_on_table[para]:
+				if hand_types_on_table[dwie_pary]:
+					pierwsza_para = value_of_type[para]
+					obie_pary = value_of_type[dwie_pary]
+					druga_para = obie_pary-pierwsza_para
+					a = number + pierwsza_para
+					b = number + druga_para
+					update_hand_type_on_table(dwie_pary, max(a, b, obie_pary))
+				elif hand_types_on_table[full]:
+					other_two = value_of_type[para]
+					new_value = value_of_type[full] - other_two * 2
+					update_hand_type_on_table(full, new_value + max(number, other_two) * 2)
+				elif hand_types_on_table[para]:
 					update_hand_type_on_table(dwie_pary, value_of_type[para] + number)
-				# if "trójka" on the table
 				elif hand_types_on_table[trojka]:
 					update_hand_type_on_table(full, value_of_type[trojka] * 3 + number * 2)
 				else:
@@ -145,10 +132,33 @@ class PokerEvaluator:
 			if hand_types_on_table[current_index]:
 				return current_index, value_of_type[current_index], highest_card
 
+	@staticmethod
+	def value_of_players_hand(hand_type, val, highest_card):
+		# if hand type is strit, kolor, full or poker we do not add the highest card
+		count_highest_card = hand_type not in {4, 5, 6, 8}
+		return 10000 * hand_type + 100 * val + highest_card * count_highest_card
+
+	@staticmethod
+	def _check_consecutive_len5(cards5):
+		"""checks if ordered cards are incrementing by one"""
+		sorted_l = sorted(cards5)
+		f_of_l = sorted_l[0]
+		consecutive_len5 = list(range(f_of_l, f_of_l + 6))
+		return sorted_l == consecutive_len5
+
+	@staticmethod
+	def _check_if_colour_in_cards(cards5):
+		col1 = cards5[0][1]
+		for _, col in cards5:
+			if col != col1:
+				break
+		else:
+			return True
+
 
 if __name__ == '__main__':
 	hand = {('A', 'h'), ('A', 's')}
-	base = {('3', 'h'), ('3', 's'), ('3', 'd'), ('A', 'c'), ('A', 'd')}
+	base = {('3', 'h'), ('3', 's'), ('3', 'd'), ('A', 'c')}
 
 	evaluator = PokerEvaluator()
 	evaluator.update_table(base)
