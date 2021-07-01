@@ -3,19 +3,22 @@ from cProfile import run
 
 
 class PokerEvaluator:
+	COLOURS = ('h', 'c', 'd', 's')
+	CARD_VALUES = {
+		'J': 11,
+		'D': 12,
+		'K': 13,
+		'A': 14,
+		**{str(n): n for n in range(2, 11)}
+	}
+
 	def __init__(self):
 		self._table = set()
 		self._hand = set()
+		self.deck = set()
+
 		self.HAND_VALUES = ['highest_card', 'para', 'dwie_pary', 'trojka', 'strit', 'kolor', 'full', 'kareta', 'poker']
-		self.COLOURS = ['h', 'c', 'd', 's']
-		self.CARD_VALUES = {
-			'J': 11,
-			'D': 12,
-			'K': 13,
-			'A': 14,
-			**{str(n): n for n in range(2, 11)}
-		}
-		self.deck = set((card, colour) for card in self.CARD_VALUES for colour in self.COLOURS)
+		self.reset_deck()
 
 	def reset_deck(self):
 		self.deck = set((card, colour) for card in self.CARD_VALUES for colour in self.COLOURS)
@@ -59,9 +62,10 @@ class PokerEvaluator:
 
 	def best_hand_type_from_seven_cards(self, cards7):
 		# we make a list of all cards as numbers based on their value
-		numbers = [self.CARD_VALUES[number] for number, _ in cards7]
+		numbers = sorted(set([self.CARD_VALUES[number] for number, _ in cards7]))
 		highest_card = max(numbers)
 
+		# init helper variables
 		para, dwie_pary, trojka, strit, kolor, full, kareta, poker = range(1, 9)  # indexes of hand types
 		hand_types_on_table = [False for _ in self.HAND_VALUES]
 		hand_types_on_table[0] = True
@@ -73,27 +77,22 @@ class PokerEvaluator:
 			value_of_type[hand_type_index] = value_of_hand_type
 
 		# check if poker or strit
-		for combination_of5 in combinations(cards7, 5):
-			main = [self.CARD_VALUES[number] for number, _ in combination_of5]
-			max_main = max(main)
-
-			# if there is an ase we have to look for two separate cases
-			secondary = [] if 14 not in main else [1 if x == 14 else x for x in main]
-
-			if self._check_if_colour_in_cards(combination_of5):
-				update_hand_type_on_table(kolor, max(max_main, value_of_type[kolor]))
-				if self._check_consecutive_len5(main):
-					update_hand_type_on_table(poker, max_main)
-				elif secondary and self._check_consecutive_len5(secondary):
-					update_hand_type_on_table(poker, max(secondary))
+		consecutive_5_cards_in_cards7 = PokerEvaluator.there_is_con_len5_in_cards7(numbers)
+		if consecutive_5_cards_in_cards7:
+			max_of_con5 = max(consecutive_5_cards_in_cards7)
+			if PokerEvaluator.check_if_color_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
+				update_hand_type_on_table(poker, max_of_con5)
 			else:
-				if self._check_consecutive_len5(main):
-					update_hand_type_on_table(strit, max_main)
-				elif secondary and self._check_consecutive_len5(secondary):
-					update_hand_type_on_table(strit, max(secondary))
+				update_hand_type_on_table(strit, max_of_con5)
 
+		# check for kolor
+		color_on_table = PokerEvaluator.check_if_color_in_cards(cards7)
+		if color_on_table:
+			update_hand_type_on_table(kolor, max(color_on_table))
+
+		# check for para, dwie-pary, full, trojka etc.
 		for number in set(numbers):
-			count = numbers.count(number)
+			count = sum(num == number for num, _ in cards7)
 
 			if count == 4:
 				update_hand_type_on_table(kareta, number)
@@ -117,8 +116,8 @@ class PokerEvaluator:
 					update_hand_type_on_table(dwie_pary, max(a, b, obie_pary))
 				elif hand_types_on_table[full]:
 					other_two = value_of_type[para]
-					new_value = value_of_type[full] - other_two * 2
-					update_hand_type_on_table(full, new_value + max(number, other_two) * 2)
+					new_value = value_of_type[full] + (max(number, other_two) - other_two) * 2
+					update_hand_type_on_table(full, new_value)
 				elif hand_types_on_table[para]:
 					update_hand_type_on_table(dwie_pary, value_of_type[para] + number)
 				elif hand_types_on_table[trojka]:
@@ -139,21 +138,35 @@ class PokerEvaluator:
 		return 10000 * hand_type + 100 * val + highest_card * count_highest_card
 
 	@staticmethod
-	def _check_consecutive_len5(cards5):
-		"""checks if ordered cards are incrementing by one"""
-		sorted_l = sorted(cards5)
-		f_of_l = sorted_l[0]
-		consecutive_len5 = list(range(f_of_l, f_of_l + 6))
-		return sorted_l == consecutive_len5
+	def there_is_con_len5_in_cards7(cards):
+		len_cards = len(cards)
+		len_loop = len_cards - 5
+		for i in range(len_loop + 1):
+			cards5 = cards[len_loop - i: len_cards - i]
+			f_of_l = cards5[0]
+			consecutive_len5 = list(range(f_of_l, f_of_l + 5))
+			if cards5 == consecutive_len5:
+				return cards5
 
 	@staticmethod
-	def _check_if_colour_in_cards(cards5):
-		col1 = cards5[0][1]
-		for _, col in cards5:
-			if col != col1:
-				break
-		else:
-			return True
+	def check_if_color_in_cards(cards7):
+		colors = [col for _, col in cards7]
+		set_of_colors = set(colors)
+		for color in set_of_colors:
+			count = colors.count(color)
+			if count == 5:
+				nums = (PokerEvaluator.CARD_VALUES[num] for num, col in cards7 if col == color)
+				return nums
+
+	@staticmethod
+	def check_if_color_in_cards_with_numbers(cards7, nums):
+		set_of_nums = set(nums)
+		colors = [col for num, col in cards7 if num in set_of_nums]
+		set_of_cols = set(colors)
+		for col in set_of_cols:
+			count = colors.count(col)
+			if count == 5:
+				return True
 
 
 if __name__ == '__main__':
