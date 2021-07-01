@@ -21,16 +21,25 @@ class PokerEvaluator:
 		self.reset_deck()
 
 	def reset_deck(self):
-		self.deck = set((card, colour) for card in self.CARD_VALUES for colour in self.COLOURS)
+		self.deck = set(self.normalize_card((num, col)) for num in self.CARD_VALUES for col in self.COLOURS)
 
-	def reset_table(self, table):
+	@staticmethod
+	def normalize_card(card):
+		number = PokerEvaluator.CARD_VALUES[card[0]]
+		color = PokerEvaluator.COLOURS.index(card[1])
+		return number, color
+
+	def set_table_as(self, table):
+		table = set(PokerEvaluator.normalize_card(card) for card in table)
 		self._table = table
 
 	def update_table(self, card):
+		card = PokerEvaluator.normalize_card(card)
 		self._table.update(card)
 
-	def update_hand(self, hand):
-		self._hand = hand
+	def update_hand(self, players_hand):
+		players_hand = set(PokerEvaluator.normalize_card(card) for card in players_hand)
+		self._hand = players_hand
 
 	def calculate_position(self):
 		"""we have the hand and incomplete table and the hand of most powerful enemy"""
@@ -62,7 +71,7 @@ class PokerEvaluator:
 
 	def best_hand_type_from_seven_cards(self, cards7):
 		# we make a list of all cards as numbers based on their value
-		numbers = sorted(set([self.CARD_VALUES[number] for number, _ in cards7]))
+		numbers = sorted(set([number for number, _ in cards7]))
 		highest_card = max(numbers)
 
 		# init helper variables
@@ -91,7 +100,7 @@ class PokerEvaluator:
 			update_hand_type_on_table(kolor, max(color_on_table))
 
 		# check for para, dwie-pary, full, trojka etc.
-		for number in set(numbers):
+		for number in numbers:
 			count = sum(num == number for num, _ in cards7)
 
 			if count == 4:
@@ -155,7 +164,7 @@ class PokerEvaluator:
 		for color in set_of_colors:
 			count = colors.count(color)
 			if count == 5:
-				nums = (PokerEvaluator.CARD_VALUES[num] for num, col in cards7 if col == color)
+				nums = (num for num, col in cards7 if col == color)
 				return nums
 
 	@staticmethod
@@ -174,7 +183,7 @@ if __name__ == '__main__':
 	base = {('3', 'h'), ('3', 's'), ('3', 'd'), ('A', 'c')}
 
 	evaluator = PokerEvaluator()
-	evaluator.update_table(base)
+	evaluator.set_table_as(base)
 	evaluator.update_hand(hand)
 	result = evaluator.calculate_position
 	run('result()', sort='cumtime')
