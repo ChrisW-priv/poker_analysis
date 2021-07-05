@@ -66,14 +66,14 @@ class PokerEvaluator:
 			n *= (cards_to_choose_from_for_enemy - i)
 			n /= (i+1)
 
-		return n
+		return int(n)
 
 	def calculate_position(self):
 		"""calculates percentage of how many times we win or make a draw compered to all position that we consider"""
 
 		def value_of_enemy_cards_is_smaller(cards7_enemy, our_cards_value):
 			"""this function should be run in parallel but I just can't find a way to do that yet - please help"""
-			enemy_cards_value = self.value_of_best_hand_type_from_seven_cards(cards7_enemy)
+			enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(cards7_enemy)
 			return our_cards_value >= enemy_cards_value
 
 		win = 0
@@ -84,7 +84,7 @@ class PokerEvaluator:
 
 			our_seven_cards = full_table.union(self._hand)
 
-			our_cards_value = self.value_of_best_hand_type_from_seven_cards(our_seven_cards)
+			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(our_seven_cards)
 
 			for enemy_cards in combinations(rest_of_deck, 2):
 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
