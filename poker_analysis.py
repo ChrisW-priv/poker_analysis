@@ -1,9 +1,13 @@
 from itertools import combinations
-from cProfile import run
+
+# types of hand:
+# 'highest_card','pair','two_pair','three_of_a_kind','straight','flush','full_house','four_of_a_kind','straight_flush'
+# card suites:
+# diamonds (♦), clubs (♣), hearts (♥) and spades (♠)
 
 
 class PokerEvaluator:
-	COLOURS = ('h', 'c', 'd', 's')
+	SUITES = ('d', 'c', 'h', 's')
 	CARD_VALUES = {
 		'J': 11,
 		'D': 12,
@@ -17,134 +21,152 @@ class PokerEvaluator:
 		self._hand = set()
 		self.deck = set()
 
-		self.HAND_VALUES = ['highest_card', 'para', 'dwie_pary', 'trojka', 'strit', 'kolor', 'full', 'kareta', 'poker']
 		self.reset_deck()
 
 	def reset_deck(self):
-		self.deck = set(self.normalize_card((num, col)) for num in self.CARD_VALUES for col in self.COLOURS)
+		self.deck = set(self.normalize_card((num, col)) for num in self.CARD_VALUES for col in self.SUITES)
 
 	@staticmethod
 	def normalize_card(card):
+		"""takes a tuple (str, str) and normalises it to make it consistent across code, returns (int, int) tuple"""
 		number = PokerEvaluator.CARD_VALUES[card[0]]
-		color = PokerEvaluator.COLOURS.index(card[1])
+		color = PokerEvaluator.SUITES.index(card[1])
 		return number, color
 
-	def set_table_as(self, table):
+	def set_table_as(self, table: set):
+		"""resets table of community cards to given set of cards"""
 		table = set(PokerEvaluator.normalize_card(card) for card in table)
 		self._table = table
+		self.deck -= table
 
 	def update_table(self, card):
+		"""adds normalised card to a table of community cards"""
 		card = PokerEvaluator.normalize_card(card)
 		self._table.update(card)
+		self.deck -= card
 
 	def update_hand(self, players_hand):
+		"""normalises cards and sets them as current cards of a player"""
 		players_hand = set(PokerEvaluator.normalize_card(card) for card in players_hand)
 		self._hand = players_hand
+		self.deck -= players_hand
+
+	@property
+	def positions_to_calculate(self):
+		"""calculates how many positions are there to consider during evaluation"""
+		n_cards_left_in_deck = len(self.deck)
+		n_cards_left_to_full_table = 5 - len(self._table)
+		n = 1
+		for i in range(n_cards_left_to_full_table):
+			n *= (n_cards_left_in_deck - i)
+			n /= (i+1)
+
+		cards_to_choose_from_for_enemy = n_cards_left_in_deck - n_cards_left_to_full_table
+		for i in range(2):
+			n *= (cards_to_choose_from_for_enemy - i)
+			n /= (i+1)
+
+		return n
 
 	def calculate_position(self):
-		"""we have the hand and incomplete table and the hand of most powerful enemy"""
-		self.deck -= self._hand
-		self.deck -= self._table
+		"""calculates percentage of how many times we win or make a draw compered to all position that we consider"""
+
+		def value_of_enemy_cards_is_smaller(cards7_enemy, our_cards_value):
+			"""this function should be run in parallel but I just can't find a way to do that yet - please help"""
+			enemy_cards_value = self.value_of_best_hand_type_from_seven_cards(cards7_enemy)
+			return our_cards_value >= enemy_cards_value
 
 		win = 0
-		draw = 0
-		loss = 0
 
 		for table_addition in combinations(self.deck, 5-len(self._table)):
 			full_table = self._table.union(table_addition)
 			rest_of_deck = self.deck - set(table_addition)
 
-			our_hand_type, our_val, our_highest_card = self.best_hand_type_from_seven_cards(full_table.union(self._hand))
-			our_cards_value = self.value_of_players_hand(our_hand_type, our_val, our_highest_card)
+			our_seven_cards = full_table.union(self._hand)
+
+			our_cards_value = self.value_of_best_hand_type_from_seven_cards(our_seven_cards)
 
 			for enemy_cards in combinations(rest_of_deck, 2):
-				enemy_hand_type, enemy_val, enemy_highest_card = self.best_hand_type_from_seven_cards(full_table.union(enemy_cards))
-				enemy_cards_value = self.value_of_players_hand(enemy_hand_type, enemy_val, enemy_highest_card)
-				if our_cards_value > enemy_cards_value:
-					win += 1
-				elif our_cards_value == enemy_cards_value:
-					draw += 1
-				else:
-					loss += 1
+				# here the code could be set to run on multiple cores to calculate values for different enemy cards
+				enemy_seven_cards = full_table.union(enemy_cards)
+				win += value_of_enemy_cards_is_smaller(enemy_seven_cards, our_cards_value)
 
-		return win, draw, loss
+		return round(win * 100 / self.positions_to_calculate, 2)
 
-	def best_hand_type_from_seven_cards(self, cards7):
-		# we make a list of all cards as numbers based on their value
+	@staticmethod
+	def value_of_best_hand_type_from_seven_cards(cards7):
+		"""
+		finds best hand type in a set of seven cards player can have - two from player ows and five community cards
+		returns integer value to best type of hand found
+		"""
+
 		numbers = sorted(set([number for number, _ in cards7]))
-		highest_card = max(numbers)
 
 		# init helper variables
-		para, dwie_pary, trojka, strit, kolor, full, kareta, poker = range(1, 9)  # indexes of hand types
-		hand_types_on_table = [False for _ in self.HAND_VALUES]
+		pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush = range(1, 9)
+		hand_types_on_table = [False for _ in range(9)]
 		hand_types_on_table[0] = True
-		value_of_type = [0 for _ in self.HAND_VALUES]
+		value_of_type = [0 for _ in range(9)]
 
 		def update_hand_type_on_table(hand_type_index, value_of_hand_type):
 			nonlocal hand_types_on_table, value_of_type
 			hand_types_on_table[hand_type_index] = True
 			value_of_type[hand_type_index] = value_of_hand_type
 
-		# check if poker or strit
+		# check if straight_flush or straight
 		consecutive_5_cards_in_cards7 = PokerEvaluator.there_is_con_len5_in_cards7(numbers)
 		if consecutive_5_cards_in_cards7:
 			max_of_con5 = max(consecutive_5_cards_in_cards7)
-			if PokerEvaluator.check_if_color_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
-				update_hand_type_on_table(poker, max_of_con5)
+			if PokerEvaluator.check_if_same_suite_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
+				update_hand_type_on_table(straight_flush, max_of_con5)
 			else:
-				update_hand_type_on_table(strit, max_of_con5)
+				update_hand_type_on_table(straight, max_of_con5)
 
-		# check for kolor
-		color_on_table = PokerEvaluator.check_if_color_in_cards(cards7)
+		# check for flush
+		color_on_table = PokerEvaluator.check_if_same_suite_in_cards(cards7)
 		if color_on_table:
-			update_hand_type_on_table(kolor, max(color_on_table))
+			update_hand_type_on_table(flush, max(color_on_table))
 
-		# check for para, dwie-pary, full, trojka etc.
+		# check for pair, two-pais, full_house, three_of_a_kind etc.
 		for number in numbers:
 			count = sum(num == number for num, _ in cards7)
 
 			if count == 4:
-				update_hand_type_on_table(kareta, number)
+				update_hand_type_on_table(four_of_a_kind, number)
 
 			elif count == 3:
-				if hand_types_on_table[para]:
-					update_hand_type_on_table(full, number * 3 + value_of_type[para] * 2)
-				elif hand_types_on_table[trojka]:
-					other_three = value_of_type[trojka]
-					update_hand_type_on_table(full, max(other_three, number) * 3 + min(other_three, number) * 2)
+				if hand_types_on_table[pair]:
+					update_hand_type_on_table(full_house, number * 3 + value_of_type[pair] * 2)
+				elif hand_types_on_table[three_of_a_kind]:
+					other_three = value_of_type[three_of_a_kind]
+					update_hand_type_on_table(full_house, max(other_three, number) * 3 + min(other_three, number) * 2)
 				else:
-					update_hand_type_on_table(trojka, number)
+					update_hand_type_on_table(three_of_a_kind, number)
 
 			elif count == 2:
-				if hand_types_on_table[dwie_pary]:
-					pierwsza_para = value_of_type[para]
-					obie_pary = value_of_type[dwie_pary]
-					druga_para = obie_pary-pierwsza_para
-					a = number + pierwsza_para
-					b = number + druga_para
-					update_hand_type_on_table(dwie_pary, max(a, b, obie_pary))
-				elif hand_types_on_table[full]:
-					other_two = value_of_type[para]
-					new_value = value_of_type[full] + (max(number, other_two) - other_two) * 2
-					update_hand_type_on_table(full, new_value)
-				elif hand_types_on_table[para]:
-					update_hand_type_on_table(dwie_pary, value_of_type[para] + number)
-				elif hand_types_on_table[trojka]:
-					update_hand_type_on_table(full, value_of_type[trojka] * 3 + number * 2)
+				if hand_types_on_table[two_pair]:
+					first_pair = value_of_type[pair]
+					both_pairs = value_of_type[two_pair]
+					second_pair = both_pairs-first_pair
+					a = number + first_pair
+					b = number + second_pair
+					update_hand_type_on_table(two_pair, max(a, b, both_pairs))
+				elif hand_types_on_table[full_house]:
+					other_two = value_of_type[pair]
+					new_value = value_of_type[full_house] + (max(number, other_two) - other_two) * 2
+					update_hand_type_on_table(full_house, new_value)
+				elif hand_types_on_table[pair]:
+					update_hand_type_on_table(two_pair, value_of_type[pair] + number)
+				elif hand_types_on_table[three_of_a_kind]:
+					update_hand_type_on_table(full_house, value_of_type[three_of_a_kind] * 3 + number * 2)
 				else:
-					update_hand_type_on_table(para, number)
+					update_hand_type_on_table(pair, number)
 
-		len_hand_values = len(self.HAND_VALUES)
-		for i in range(len_hand_values):
-			current_index = len_hand_values-i-1
+		for i in range(9):
+			current_index = 8-i
 			if hand_types_on_table[current_index]:
-				return current_index, value_of_type[current_index], highest_card
-
-	@staticmethod
-	def value_of_players_hand(hand_type, val, highest_card):
-		# if hand type is strit, kolor, full or poker we do not add the highest card
-		count_highest_card = hand_type not in {4, 5, 6, 8}
-		return 10000 * hand_type + 100 * val + highest_card * count_highest_card
+				count_highest_card = current_index not in {straight, flush, full_house, straight_flush}
+				return 10000 * current_index + 100 * value_of_type[current_index] + numbers[-1] * count_highest_card
 
 	@staticmethod
 	def there_is_con_len5_in_cards7(cards):
@@ -158,7 +180,7 @@ class PokerEvaluator:
 				return cards5
 
 	@staticmethod
-	def check_if_color_in_cards(cards7):
+	def check_if_same_suite_in_cards(cards7):
 		colors = [col for _, col in cards7]
 		set_of_colors = set(colors)
 		for color in set_of_colors:
@@ -168,7 +190,7 @@ class PokerEvaluator:
 				return nums
 
 	@staticmethod
-	def check_if_color_in_cards_with_numbers(cards7, nums):
+	def check_if_same_suite_in_cards_with_numbers(cards7, nums):
 		set_of_nums = set(nums)
 		colors = [col for num, col in cards7 if num in set_of_nums]
 		set_of_cols = set(colors)
@@ -179,6 +201,7 @@ class PokerEvaluator:
 
 
 if __name__ == '__main__':
+	from cProfile import run
 	hand = {('A', 'h'), ('A', 's')}
 	base = {('3', 'h'), ('3', 's'), ('3', 'd'), ('A', 'c')}
 
