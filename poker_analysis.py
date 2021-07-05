@@ -24,7 +24,7 @@ class PokerEvaluator:
 		self.reset_deck()
 
 	def reset_deck(self):
-		self.deck = set(self.normalize_card((num, col)) for num in self.CARD_VALUES for col in self.SUITES)
+		self.deck = set(PokerEvaluator.normalize_card((num, col)) for num in PokerEvaluator.CARD_VALUES for col in PokerEvaluator.SUITES)
 
 	@staticmethod
 	def normalize_card(card):
