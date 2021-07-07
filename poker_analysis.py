@@ -54,19 +54,22 @@ class PokerEvaluator:
 	@property
 	def positions_to_calculate(self):
 		"""calculates how many positions are there to consider during evaluation"""
+		"""returns number of possible combinations of full table times number of combinations for enemy cards"""
+
 		n_cards_left_in_deck = len(self.deck)
 		n_cards_left_to_full_table = 5 - len(self._table)
-		n = 1
+		multiplier = 1
+		denominator = 1
 		for i in range(n_cards_left_to_full_table):
-			n *= (n_cards_left_in_deck - i)
-			n /= (i+1)
+			multiplier *= (n_cards_left_in_deck - i)
+			denominator *= (i+1)
 
 		cards_to_choose_from_for_enemy = n_cards_left_in_deck - n_cards_left_to_full_table
 		for i in range(2):
-			n *= (cards_to_choose_from_for_enemy - i)
-			n /= (i+1)
+			multiplier *= (cards_to_choose_from_for_enemy - i)
+			denominator *= (i+1)
 
-		return int(n)
+		return multiplier//denominator
 
 	def calculate_position(self):
 		"""calculates percentage of how many times we win or make a draw compered to all position that we consider"""
@@ -100,7 +103,12 @@ class PokerEvaluator:
 		returns integer value to best type of hand found
 		"""
 
-		numbers = sorted(set([number for number, _ in cards7]))
+		set_of_nums = set([number for number, _ in cards7])
+
+		if 14 in set_of_nums:
+			set_of_nums.add(1)
+
+		numbers = sorted(set_of_nums)
 
 		# init helper variables
 		pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush = range(1, 9)
@@ -185,7 +193,7 @@ class PokerEvaluator:
 		set_of_colors = set(colors)
 		for color in set_of_colors:
 			count = colors.count(color)
-			if count == 5:
+			if count >= 5:
 				nums = (num for num, col in cards7 if col == color)
 				return nums
 
@@ -196,7 +204,7 @@ class PokerEvaluator:
 		set_of_cols = set(colors)
 		for col in set_of_cols:
 			count = colors.count(col)
-			if count == 5:
+			if count >= 5:
 				return True
 
 
