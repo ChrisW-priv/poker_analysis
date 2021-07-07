@@ -24,10 +24,10 @@ class PokerEvaluator:
 		self.reset_deck()
 
 	def reset_deck(self):
-		self.deck = set(PokerEvaluator.normalize_card((num, col)) for num in PokerEvaluator.CARD_VALUES for col in PokerEvaluator.SUITES)
+		self.deck = set(PokerEvaluator._normalize_card((num, col)) for num in PokerEvaluator.CARD_VALUES for col in PokerEvaluator.SUITES)
 
 	@staticmethod
-	def normalize_card(card):
+	def _normalize_card(card):
 		"""takes a tuple (str, str) and normalises it to make it consistent across code, returns (int, int) tuple"""
 		number = PokerEvaluator.CARD_VALUES[card[0]]
 		color = PokerEvaluator.SUITES.index(card[1])
@@ -35,19 +35,19 @@ class PokerEvaluator:
 
 	def set_table_as(self, table: set):
 		"""resets table of community cards to given set of cards"""
-		table = set(PokerEvaluator.normalize_card(card) for card in table)
+		table = set(PokerEvaluator._normalize_card(card) for card in table)
 		self._table = table
 		self.deck -= table
 
 	def update_table(self, card):
 		"""adds normalised card to a table of community cards"""
-		card = PokerEvaluator.normalize_card(card)
+		card = PokerEvaluator._normalize_card(card)
 		self._table.update(card)
 		self.deck -= card
 
 	def update_hand(self, players_hand):
 		"""normalises cards and sets them as current cards of a player"""
-		players_hand = set(PokerEvaluator.normalize_card(card) for card in players_hand)
+		players_hand = set(PokerEvaluator._normalize_card(card) for card in players_hand)
 		self._hand = players_hand
 		self.deck -= players_hand
 
@@ -124,16 +124,16 @@ class PokerEvaluator:
 			value_of_type[hand_type_index] = value_of_hand_type
 
 		# check if straight_flush or straight
-		consecutive_5_cards_in_cards7 = PokerEvaluator.there_is_con_len5_in_cards7(numbers)
+		consecutive_5_cards_in_cards7 = PokerEvaluator._there_is_con_len5_in_cards7(numbers)
 		if consecutive_5_cards_in_cards7:
 			max_of_con5 = max(consecutive_5_cards_in_cards7)
-			if PokerEvaluator.check_if_same_suite_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
+			if PokerEvaluator._check_if_same_suite_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
 				return straight_flush * 10000 + max_of_con5 * 100
 			else:
 				update_hand_type_on_table(straight, max_of_con5)
 
 		# check for flush
-		color_on_table = PokerEvaluator.check_if_same_suite_in_cards(cards7)
+		color_on_table = PokerEvaluator._check_if_same_suite_in_cards(cards7)
 		if color_on_table:
 			update_hand_type_on_table(flush, max(color_on_table))
 
@@ -180,7 +180,7 @@ class PokerEvaluator:
 				return 10000 * current_index + 100 * value_of_type[current_index] + high_card * count_highest_card
 
 	@staticmethod
-	def there_is_con_len5_in_cards7(cards):
+	def _there_is_con_len5_in_cards7(cards):
 		len_cards = len(cards)
 		len_loop = len_cards - 5
 		for i in range(len_loop + 1):
@@ -191,7 +191,7 @@ class PokerEvaluator:
 				return cards5
 
 	@staticmethod
-	def check_if_same_suite_in_cards(cards7):
+	def _check_if_same_suite_in_cards(cards7):
 		colors = [col for _, col in cards7]
 		set_of_colors = set(colors)
 		for color in set_of_colors:
@@ -201,7 +201,7 @@ class PokerEvaluator:
 				return nums
 
 	@staticmethod
-	def check_if_same_suite_in_cards_with_numbers(cards7, nums):
+	def _check_if_same_suite_in_cards_with_numbers(cards7, nums):
 		set_of_nums = set(nums)
 		colors = [col for num, col in cards7 if num in set_of_nums]
 		set_of_cols = set(colors)
