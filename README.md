@@ -1,5 +1,5 @@
 # Poker analysis
-This porject allows you to analise your likelihood of winning poker game given only your cards on hand and arbitrary number of cards on table. 
+This project allows you to analise your likelihood of winning poker game given only your cards on hand and arbitrary number of cards on table. 
 
 Currently supports only Teksas Holdem variation and does not have a GUI.
 
