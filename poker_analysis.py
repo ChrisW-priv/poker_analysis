@@ -102,8 +102,8 @@ class PokerEvaluator:
 		finds best hand type in a set of seven cards player can have - two from player ows and five community cards
 		returns integer value to best type of hand found
 		"""
-
-		set_of_nums = set([number for number, _ in cards7])
+		l_of_nums = [num for num, _ in cards7]
+		set_of_nums = set(l_of_nums)
 
 		# if there is an ase we want to include its both forms as int: 1 and 14
 		if 14 in set_of_nums:
@@ -126,7 +126,7 @@ class PokerEvaluator:
 		# check if straight_flush or straight
 		consecutive_5_cards_in_cards7 = PokerEvaluator._there_is_con_len5_in_cards7(numbers)
 		if consecutive_5_cards_in_cards7:
-			max_of_con5 = max(consecutive_5_cards_in_cards7)
+			max_of_con5 = consecutive_5_cards_in_cards7[-1]
 			if PokerEvaluator._check_if_same_suite_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
 				return straight_flush * 10000 + max_of_con5 * 100
 			else:
@@ -135,10 +135,9 @@ class PokerEvaluator:
 		# check for flush
 		color_on_table = PokerEvaluator._check_if_same_suite_in_cards(cards7)
 		if color_on_table:
-			update_hand_type_on_table(flush, max(color_on_table))
+			update_hand_type_on_table(flush, color_on_table)
 
 		# check for pair, two-pais, full_house, three_of_a_kind etc.
-		l_of_nums = [num for num, _ in cards7]
 		for number in numbers:
 			count = l_of_nums.count(number)
 
@@ -180,15 +179,15 @@ class PokerEvaluator:
 				return 10000 * current_index + 100 * value_of_type[current_index] + high_card * count_highest_card
 
 	@staticmethod
-	def _there_is_con_len5_in_cards7(cards):
-		len_cards = len(cards)
+	def _there_is_con_len5_in_cards7(card_numbers):
+		len_cards = len(card_numbers)
 		len_loop = len_cards - 5
 		for i in range(len_loop + 1):
-			cards5 = cards[len_loop - i: len_cards - i]
+			cards5 = card_numbers[len_loop - i: len_cards - i]
 			f_of_l = cards5[0]
 			consecutive_len5 = list(range(f_of_l, f_of_l + 5))
 			if cards5 == consecutive_len5:
-				return cards5
+				return consecutive_len5
 
 	@staticmethod
 	def _check_if_same_suite_in_cards(cards7):
@@ -198,7 +197,8 @@ class PokerEvaluator:
 			count = colors.count(color)
 			if count >= 5:
 				nums = (num for num, col in cards7 if col == color)
-				return nums
+				max_of_nums = max(nums)
+				return max_of_nums
 
 	@staticmethod
 	def _check_if_same_suite_in_cards_with_numbers(cards7, nums):
