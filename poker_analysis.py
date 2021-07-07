@@ -105,10 +105,12 @@ class PokerEvaluator:
 
 		set_of_nums = set([number for number, _ in cards7])
 
+		# if there is an ase we want to include its both forms as int: 1 and 14
 		if 14 in set_of_nums:
 			set_of_nums.add(1)
 
 		numbers = sorted(set_of_nums)
+		high_card = numbers[-1]
 
 		# init helper variables
 		pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush = range(1, 9)
@@ -126,7 +128,7 @@ class PokerEvaluator:
 		if consecutive_5_cards_in_cards7:
 			max_of_con5 = max(consecutive_5_cards_in_cards7)
 			if PokerEvaluator.check_if_same_suite_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
-				update_hand_type_on_table(straight_flush, max_of_con5)
+				return straight_flush * 10000 + max_of_con5 * 100
 			else:
 				update_hand_type_on_table(straight, max_of_con5)
 
@@ -136,11 +138,12 @@ class PokerEvaluator:
 			update_hand_type_on_table(flush, max(color_on_table))
 
 		# check for pair, two-pais, full_house, three_of_a_kind etc.
+		l_of_nums = [num for num, _ in cards7]
 		for number in numbers:
-			count = sum(num == number for num, _ in cards7)
+			count = l_of_nums.count(number)
 
 			if count == 4:
-				update_hand_type_on_table(four_of_a_kind, number)
+				return four_of_a_kind * 10000 + number * 100 + high_card
 
 			elif count == 3:
 				if hand_types_on_table[pair]:
@@ -174,7 +177,7 @@ class PokerEvaluator:
 			current_index = 8-i
 			if hand_types_on_table[current_index]:
 				count_highest_card = current_index not in {straight, flush, full_house, straight_flush}
-				return 10000 * current_index + 100 * value_of_type[current_index] + numbers[-1] * count_highest_card
+				return 10000 * current_index + 100 * value_of_type[current_index] + high_card * count_highest_card
 
 	@staticmethod
 	def there_is_con_len5_in_cards7(cards):
@@ -211,7 +214,7 @@ class PokerEvaluator:
 if __name__ == '__main__':
 	from cProfile import run
 	hand = {('A', 'h'), ('A', 's')}
-	base = {('3', 'h'), ('3', 's'), ('3', 'd'), ('A', 'c')}
+	base = {('3', 'h'), ('3', 's'), ('A', 'c')}
 
 	evaluator = PokerEvaluator()
 	evaluator.set_table_as(base)
