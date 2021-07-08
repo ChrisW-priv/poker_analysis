@@ -852,13 +852,13 @@ struct __pyx_obj_14poker_analysis___pyx_scope_struct_7_genexpr;
 struct __pyx_obj_14poker_analysis_PokerEvaluator {
   PyObject_HEAD
   struct __pyx_vtabstruct_14poker_analysis_PokerEvaluator *__pyx_vtab;
-  PyObject *_table;
-  PyObject *_hand;
   PyObject *deck;
+  PyObject *_hand;
+  PyObject *_table;
 };
 
 
-/* "poker_analysis.pyx":28
+/* "poker_analysis.pyx":29
  * 
  * 	def reset_deck(self):
  * 		self.deck = set(PokerEvaluator._normalize_card((num, col)) for num in PokerEvaluator.CARD_VALUES for col in PokerEvaluator.SUITES)             # <<<<<<<<<<<<<<
@@ -872,10 +872,10 @@ struct __pyx_obj_14poker_analysis___pyx_scope_struct__genexpr {
 };
 
 
-/* "poker_analysis.pyx":37
+/* "poker_analysis.pyx":38
  * 		return number, color
  * 
- * 	def set_table_as(self, table: set):             # <<<<<<<<<<<<<<
+ * 	def set_table_as(self, table):             # <<<<<<<<<<<<<<
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)
  */
@@ -885,11 +885,11 @@ struct __pyx_obj_14poker_analysis___pyx_scope_struct_1_set_table_as {
 };
 
 
-/* "poker_analysis.pyx":39
- * 	def set_table_as(self, table: set):
+/* "poker_analysis.pyx":40
+ * 	def set_table_as(self, table):
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)             # <<<<<<<<<<<<<<
- * 		self._table = table
+ * 		self._table = tuple(table)
  * 		self.deck -= table
  */
 struct __pyx_obj_14poker_analysis___pyx_scope_struct_2_genexpr {
@@ -899,7 +899,7 @@ struct __pyx_obj_14poker_analysis___pyx_scope_struct_2_genexpr {
 };
 
 
-/* "poker_analysis.pyx":49
+/* "poker_analysis.pyx":50
  * 		self.deck -= card
  * 
  * 	def update_hand(self, players_hand):             # <<<<<<<<<<<<<<
@@ -912,11 +912,11 @@ struct __pyx_obj_14poker_analysis___pyx_scope_struct_3_update_hand {
 };
 
 
-/* "poker_analysis.pyx":51
+/* "poker_analysis.pyx":52
  * 	def update_hand(self, players_hand):
  * 		"""normalises cards and sets them as current cards of a player"""
  * 		players_hand = set(PokerEvaluator._normalize_card(card) for card in players_hand)             # <<<<<<<<<<<<<<
- * 		self._hand = players_hand
+ * 		self._hand = tuple(players_hand)
  * 		self.deck -= players_hand
  */
 struct __pyx_obj_14poker_analysis___pyx_scope_struct_4_genexpr {
@@ -926,7 +926,7 @@ struct __pyx_obj_14poker_analysis___pyx_scope_struct_4_genexpr {
 };
 
 
-/* "poker_analysis.pyx":98
+/* "poker_analysis.pyx":99
  * 
  * 	@staticmethod
  * 	cdef int value_of_best_hand_type_from_seven_cards(tuple cards7):             # <<<<<<<<<<<<<<
@@ -1163,23 +1163,6 @@ static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* k
 #define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
 #endif
 
-/* ArgTypeTest.proto */
-#define __Pyx_ArgTypeTest(obj, type, none_allowed, name, exact)\
-    ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
-        __Pyx__ArgTypeTest(obj, type, name, exact))
-static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
-
-/* IterFinish.proto */
-static CYTHON_INLINE int __Pyx_IterFinish(void);
-
-/* set_iter.proto */
-static CYTHON_INLINE PyObject* __Pyx_set_iterator(PyObject* iterable, int is_set,
-                                                  Py_ssize_t* p_orig_length, int* p_source_is_set);
-static CYTHON_INLINE int __Pyx_set_iter_next(
-        PyObject* iter_obj, Py_ssize_t orig_length,
-        Py_ssize_t* ppos, PyObject **value,
-        int source_is_set);
-
 /* None.proto */
 static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname);
 
@@ -1286,23 +1269,6 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
 #endif
 
-/* UnpackUnboundCMethod.proto */
-typedef struct {
-    PyObject *type;
-    PyObject **method_name;
-    PyCFunction func;
-    PyObject *method;
-    int flag;
-} __Pyx_CachedCFunction;
-
-/* CallUnboundCMethod1.proto */
-static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
-#else
-#define __Pyx_CallUnboundCMethod1(cfunc, self, arg)  __Pyx__CallUnboundCMethod1(cfunc, self, arg)
-#endif
-
 /* None.proto */
 static CYTHON_INLINE long __Pyx_div_long(long, long);
 
@@ -1321,6 +1287,9 @@ static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
 
 /* RaiseNeedMoreValuesToUnpack.proto */
 static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
+
+/* IterFinish.proto */
+static CYTHON_INLINE int __Pyx_IterFinish(void);
 
 /* UnpackItemEndCheck.proto */
 static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
@@ -1411,6 +1380,23 @@ static PyObject *__Pyx_CyFunction_New(PyMethodDef *ml,
                                       PyObject *module, PyObject *globals,
                                       PyObject* code);
 
+/* UnpackUnboundCMethod.proto */
+typedef struct {
+    PyObject *type;
+    PyObject **method_name;
+    PyCFunction func;
+    PyObject *method;
+    int flag;
+} __Pyx_CachedCFunction;
+
+/* CallUnboundCMethod1.proto */
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#else
+#define __Pyx_CallUnboundCMethod1(cfunc, self, arg)  __Pyx__CallUnboundCMethod1(cfunc, self, arg)
+#endif
+
 /* PyIntBinop.proto */
 #if !CYTHON_COMPILING_IN_PYPY
 static PyObject* __Pyx_PyInt_SubtractCObj(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
@@ -1427,6 +1413,14 @@ static CYTHON_INLINE PyObject* __Pyx_PyTuple_GetSlice(PyObject* src, Py_ssize_t 
 #define __Pyx_PyList_GetSlice(seq, start, stop)   PySequence_GetSlice(seq, start, stop)
 #define __Pyx_PyTuple_GetSlice(seq, start, stop)  PySequence_GetSlice(seq, start, stop)
 #endif
+
+/* set_iter.proto */
+static CYTHON_INLINE PyObject* __Pyx_set_iterator(PyObject* iterable, int is_set,
+                                                  Py_ssize_t* p_orig_length, int* p_source_is_set);
+static CYTHON_INLINE int __Pyx_set_iter_next(
+        PyObject* iter_obj, Py_ssize_t orig_length,
+        Py_ssize_t* ppos, PyObject **value,
+        int source_is_set);
 
 /* PyErrExceptionMatches.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -1706,7 +1700,6 @@ static const char __pyx_k_index[] = "index";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_round[] = "round";
 static const char __pyx_k_throw[] = "throw";
-static const char __pyx_k_union[] = "union";
 static const char __pyx_k_SUITES[] = "SUITES";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_number[] = "number";
@@ -1809,7 +1802,6 @@ static PyObject *__pyx_n_s_staticmethod;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
-static PyObject *__pyx_n_s_union;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_update_hand_locals_genexpr;
 static PyObject *__pyx_n_s_update_hand_type_on_table;
@@ -1839,7 +1831,6 @@ static PyObject *__pyx_tp_new_14poker_analysis___pyx_scope_struct_5_value_of_bes
 static PyObject *__pyx_tp_new_14poker_analysis___pyx_scope_struct_6__check_if_same_suite_in_cards(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_14poker_analysis___pyx_scope_struct_7_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static __Pyx_CachedCFunction __pyx_umethod_PyList_Type_count = {0, &__pyx_n_s_count, 0, 0, 0};
-static __Pyx_CachedCFunction __pyx_umethod_PySet_Type_union = {0, &__pyx_n_s_union, 0, 0, 0};
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
@@ -1861,12 +1852,12 @@ static PyObject *__pyx_codeobj__5;
 static PyObject *__pyx_codeobj__7;
 /* Late includes */
 
-/* "poker_analysis.pyx":20
- * 	cdef set _table, _hand, deck
+/* "poker_analysis.pyx":21
+ * 	cdef tuple _hand, _table
  * 
  * 	def __init__(self):             # <<<<<<<<<<<<<<
- * 		self._table = set()
- * 		self._hand = set()
+ * 		self._table = tuple()
+ * 		self._hand = tuple()
  */
 
 /* Python wrapper */
@@ -1896,14 +1887,14 @@ static int __pyx_pf_14poker_analysis_14PokerEvaluator___init__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "poker_analysis.pyx":21
+  /* "poker_analysis.pyx":22
  * 
  * 	def __init__(self):
- * 		self._table = set()             # <<<<<<<<<<<<<<
- * 		self._hand = set()
+ * 		self._table = tuple()             # <<<<<<<<<<<<<<
+ * 		self._hand = tuple()
  * 		self.deck = set()
  */
-  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)(&PyTuple_Type))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->_table);
@@ -1911,14 +1902,14 @@ static int __pyx_pf_14poker_analysis_14PokerEvaluator___init__(struct __pyx_obj_
   __pyx_v_self->_table = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":22
+  /* "poker_analysis.pyx":23
  * 	def __init__(self):
- * 		self._table = set()
- * 		self._hand = set()             # <<<<<<<<<<<<<<
+ * 		self._table = tuple()
+ * 		self._hand = tuple()             # <<<<<<<<<<<<<<
  * 		self.deck = set()
  * 
  */
-  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)(&PyTuple_Type))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->_hand);
@@ -1926,14 +1917,14 @@ static int __pyx_pf_14poker_analysis_14PokerEvaluator___init__(struct __pyx_obj_
   __pyx_v_self->_hand = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":23
- * 		self._table = set()
- * 		self._hand = set()
+  /* "poker_analysis.pyx":24
+ * 		self._table = tuple()
+ * 		self._hand = tuple()
  * 		self.deck = set()             # <<<<<<<<<<<<<<
  * 
  * 		self.reset_deck()
  */
-  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->deck);
@@ -1941,14 +1932,14 @@ static int __pyx_pf_14poker_analysis_14PokerEvaluator___init__(struct __pyx_obj_
   __pyx_v_self->deck = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":25
+  /* "poker_analysis.pyx":26
  * 		self.deck = set()
  * 
  * 		self.reset_deck()             # <<<<<<<<<<<<<<
  * 
  * 	def reset_deck(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_reset_deck); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_reset_deck); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1962,17 +1953,17 @@ static int __pyx_pf_14poker_analysis_14PokerEvaluator___init__(struct __pyx_obj_
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":20
- * 	cdef set _table, _hand, deck
+  /* "poker_analysis.pyx":21
+ * 	cdef tuple _hand, _table
  * 
  * 	def __init__(self):             # <<<<<<<<<<<<<<
- * 		self._table = set()
- * 		self._hand = set()
+ * 		self._table = tuple()
+ * 		self._hand = tuple()
  */
 
   /* function exit code */
@@ -1989,7 +1980,7 @@ static int __pyx_pf_14poker_analysis_14PokerEvaluator___init__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":27
+/* "poker_analysis.pyx":28
  * 		self.reset_deck()
  * 
  * 	def reset_deck(self):             # <<<<<<<<<<<<<<
@@ -2011,7 +2002,7 @@ static PyObject *__pyx_pw_14poker_analysis_14PokerEvaluator_3reset_deck(PyObject
 }
 static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "poker_analysis.pyx":28
+/* "poker_analysis.pyx":29
  * 
  * 	def reset_deck(self):
  * 		self.deck = set(PokerEvaluator._normalize_card((num, col)) for num in PokerEvaluator.CARD_VALUES for col in PokerEvaluator.SUITES)             # <<<<<<<<<<<<<<
@@ -2031,12 +2022,12 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_10reset_deck_genexpr
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_14poker_analysis___pyx_scope_struct__genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 28, __pyx_L1_error)
+    __PYX_ERR(0, 29, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_reset_deck_locals_genexpr, __pyx_n_s_poker_analysis); if (unlikely(!gen)) __PYX_ERR(0, 28, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_reset_deck_locals_genexpr, __pyx_n_s_poker_analysis); if (unlikely(!gen)) __PYX_ERR(0, 29, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -2078,18 +2069,18 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 28, __pyx_L1_error)
-  __pyx_r = PySet_New(NULL); if (unlikely(!__pyx_r)) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_r = PySet_New(NULL); if (unlikely(!__pyx_r)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_CARD_VALUES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_CARD_VALUES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 28, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -2097,17 +2088,17 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 28, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 29, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 28, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 29, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -2117,7 +2108,7 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 28, __pyx_L1_error)
+          else __PYX_ERR(0, 29, __pyx_L1_error)
         }
         break;
       }
@@ -2127,15 +2118,15 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_num, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_SUITES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_SUITES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
       __pyx_t_5 = __pyx_t_1; __Pyx_INCREF(__pyx_t_5); __pyx_t_6 = 0;
       __pyx_t_7 = NULL;
     } else {
-      __pyx_t_6 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 28, __pyx_L1_error)
+      __pyx_t_6 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_7 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 28, __pyx_L1_error)
+      __pyx_t_7 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 29, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
@@ -2143,17 +2134,17 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
         if (likely(PyList_CheckExact(__pyx_t_5))) {
           if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 28, __pyx_L1_error)
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 29, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
           if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 28, __pyx_L1_error)
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 29, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
@@ -2163,7 +2154,7 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 28, __pyx_L1_error)
+            else __PYX_ERR(0, 29, __pyx_L1_error)
           }
           break;
         }
@@ -2173,9 +2164,9 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
       __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_col, __pyx_t_1);
       __Pyx_GIVEREF(__pyx_t_1);
       __pyx_t_1 = 0;
-      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 28, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 28, __pyx_L1_error)
+      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_num);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_num);
@@ -2196,10 +2187,10 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
       __pyx_t_1 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_10, __pyx_t_9) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_9);
       __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(PySet_Add(__pyx_r, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 28, __pyx_L1_error)
+      if (unlikely(PySet_Add(__pyx_r, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -2229,7 +2220,7 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_10reset_deck_2genera
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":27
+/* "poker_analysis.pyx":28
  * 		self.reset_deck()
  * 
  * 	def reset_deck(self):             # <<<<<<<<<<<<<<
@@ -2247,16 +2238,16 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_2reset_deck(struct _
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("reset_deck", 0);
 
-  /* "poker_analysis.pyx":28
+  /* "poker_analysis.pyx":29
  * 
  * 	def reset_deck(self):
  * 		self.deck = set(PokerEvaluator._normalize_card((num, col)) for num in PokerEvaluator.CARD_VALUES for col in PokerEvaluator.SUITES)             # <<<<<<<<<<<<<<
  * 
  * 	@staticmethod
  */
-  __pyx_t_1 = __pyx_pf_14poker_analysis_14PokerEvaluator_10reset_deck_genexpr(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_14poker_analysis_14PokerEvaluator_10reset_deck_genexpr(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_GIVEREF(__pyx_t_2);
@@ -2265,7 +2256,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_2reset_deck(struct _
   __pyx_v_self->deck = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":27
+  /* "poker_analysis.pyx":28
  * 		self.reset_deck()
  * 
  * 	def reset_deck(self):             # <<<<<<<<<<<<<<
@@ -2287,7 +2278,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_2reset_deck(struct _
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":31
+/* "poker_analysis.pyx":32
  * 
  * 	@staticmethod
  * 	def _normalize_card(card):             # <<<<<<<<<<<<<<
@@ -2326,7 +2317,7 @@ static PyObject *__pyx_pw_14poker_analysis_14PokerEvaluator_5_normalize_card(CYT
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_normalize_card") < 0)) __PYX_ERR(0, 31, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_normalize_card") < 0)) __PYX_ERR(0, 32, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -2337,7 +2328,7 @@ static PyObject *__pyx_pw_14poker_analysis_14PokerEvaluator_5_normalize_card(CYT
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_normalize_card", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 31, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_normalize_card", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 32, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("poker_analysis.PokerEvaluator._normalize_card", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2364,37 +2355,37 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_4_normalize_card(PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_normalize_card", 0);
 
-  /* "poker_analysis.pyx":33
+  /* "poker_analysis.pyx":34
  * 	def _normalize_card(card):
  * 		"""takes a tuple (str, str) and normalises it to make it consistent across code, returns (int, int) tuple"""
  * 		number = PokerEvaluator.CARD_VALUES[card[0]]             # <<<<<<<<<<<<<<
  * 		color = PokerEvaluator.SUITES.index(card[1])
  * 		return number, color
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_CARD_VALUES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_CARD_VALUES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_card, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_card, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_number = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "poker_analysis.pyx":34
+  /* "poker_analysis.pyx":35
  * 		"""takes a tuple (str, str) and normalises it to make it consistent across code, returns (int, int) tuple"""
  * 		number = PokerEvaluator.CARD_VALUES[card[0]]
  * 		color = PokerEvaluator.SUITES.index(card[1])             # <<<<<<<<<<<<<<
  * 		return number, color
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_SUITES); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_SUITES); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_card, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_card, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -2409,21 +2400,21 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_4_normalize_card(PyO
   __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_color = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "poker_analysis.pyx":35
+  /* "poker_analysis.pyx":36
  * 		number = PokerEvaluator.CARD_VALUES[card[0]]
  * 		color = PokerEvaluator.SUITES.index(card[1])
  * 		return number, color             # <<<<<<<<<<<<<<
  * 
- * 	def set_table_as(self, table: set):
+ * 	def set_table_as(self, table):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_v_number);
   __Pyx_GIVEREF(__pyx_v_number);
@@ -2435,7 +2426,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_4_normalize_card(PyO
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "poker_analysis.pyx":31
+  /* "poker_analysis.pyx":32
  * 
  * 	@staticmethod
  * 	def _normalize_card(card):             # <<<<<<<<<<<<<<
@@ -2459,10 +2450,10 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_4_normalize_card(PyO
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":37
+/* "poker_analysis.pyx":38
  * 		return number, color
  * 
- * 	def set_table_as(self, table: set):             # <<<<<<<<<<<<<<
+ * 	def set_table_as(self, table):             # <<<<<<<<<<<<<<
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)
  */
@@ -2471,30 +2462,22 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_4_normalize_card(PyO
 static PyObject *__pyx_pw_14poker_analysis_14PokerEvaluator_7set_table_as(PyObject *__pyx_v_self, PyObject *__pyx_v_table); /*proto*/
 static char __pyx_doc_14poker_analysis_14PokerEvaluator_6set_table_as[] = "resets table of community cards to given set of cards";
 static PyObject *__pyx_pw_14poker_analysis_14PokerEvaluator_7set_table_as(PyObject *__pyx_v_self, PyObject *__pyx_v_table) {
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_table_as (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_table), (&PySet_Type), 1, "table", 1))) __PYX_ERR(0, 37, __pyx_L1_error)
-  __pyx_r = __pyx_pf_14poker_analysis_14PokerEvaluator_6set_table_as(((struct __pyx_obj_14poker_analysis_PokerEvaluator *)__pyx_v_self), ((PyObject*)__pyx_v_table));
+  __pyx_r = __pyx_pf_14poker_analysis_14PokerEvaluator_6set_table_as(((struct __pyx_obj_14poker_analysis_PokerEvaluator *)__pyx_v_self), ((PyObject *)__pyx_v_table));
 
   /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_12set_table_as_2generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "poker_analysis.pyx":39
- * 	def set_table_as(self, table: set):
+/* "poker_analysis.pyx":40
+ * 	def set_table_as(self, table):
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)             # <<<<<<<<<<<<<<
- * 		self._table = table
+ * 		self._table = tuple(table)
  * 		self.deck -= table
  */
 
@@ -2510,7 +2493,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_12set_table_as_genex
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_14poker_analysis___pyx_scope_struct_2_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 39, __pyx_L1_error)
+    __PYX_ERR(0, 40, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -2518,7 +2501,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_12set_table_as_genex
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_14poker_analysis_14PokerEvaluator_12set_table_as_2generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_set_table_as_locals_genexpr, __pyx_n_s_poker_analysis); if (unlikely(!gen)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_14poker_analysis_14PokerEvaluator_12set_table_as_2generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_set_table_as_locals_genexpr, __pyx_n_s_poker_analysis); if (unlikely(!gen)) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -2540,12 +2523,10 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_12set_table_as_2gene
   PyObject *__pyx_r = NULL;
   PyObject *__pyx_t_1 = NULL;
   Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  int __pyx_t_4;
+  PyObject *(*__pyx_t_3)(PyObject *);
+  PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_6 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2558,44 +2539,72 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_12set_table_as_2gene
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 39, __pyx_L1_error)
-  __pyx_r = PySet_New(NULL); if (unlikely(!__pyx_r)) __PYX_ERR(0, 39, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_r = PySet_New(NULL); if (unlikely(!__pyx_r)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_r);
-  __pyx_t_2 = 0;
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_table)) { __Pyx_RaiseClosureNameError("table"); __PYX_ERR(0, 39, __pyx_L1_error) }
-  __pyx_t_5 = __Pyx_set_iterator(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_table, 1, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 39, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_1);
-  __pyx_t_1 = __pyx_t_5;
-  __pyx_t_5 = 0;
-  while (1) {
-    __pyx_t_6 = __Pyx_set_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_5, __pyx_t_4);
-    if (unlikely(__pyx_t_6 == 0)) break;
-    if (unlikely(__pyx_t_6 == -1)) __PYX_ERR(0, 39, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_table)) { __Pyx_RaiseClosureNameError("table"); __PYX_ERR(0, 40, __pyx_L1_error) }
+  if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_table)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_table)) {
+    __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_table; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+    __pyx_t_3 = NULL;
+  } else {
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_table); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+  }
+  for (;;) {
+    if (likely(!__pyx_t_3)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      } else {
+        if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      }
+    } else {
+      __pyx_t_4 = __pyx_t_3(__pyx_t_1);
+      if (unlikely(!__pyx_t_4)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 40, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_4);
+    }
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_card);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_card, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_5);
-    __pyx_t_5 = 0;
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 39, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-      __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_7);
-      if (likely(__pyx_t_8)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-        __Pyx_INCREF(__pyx_t_8);
+    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_card, __pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_4);
+    __pyx_t_4 = 0;
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = NULL;
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_7, function);
+        __Pyx_DECREF_SET(__pyx_t_5, function);
       }
     }
-    __pyx_t_5 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_8, __pyx_cur_scope->__pyx_v_card) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_cur_scope->__pyx_v_card);
-    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 39, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(PySet_Add(__pyx_r, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_cur_scope->__pyx_v_card) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_cur_scope->__pyx_v_card);
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (unlikely(PySet_Add(__pyx_r, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 40, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -2605,9 +2614,9 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_12set_table_as_2gene
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
   __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_AddTraceback("genexpr", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2620,10 +2629,10 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_12set_table_as_2gene
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":37
+/* "poker_analysis.pyx":38
  * 		return number, color
  * 
- * 	def set_table_as(self, table: set):             # <<<<<<<<<<<<<<
+ * 	def set_table_as(self, table):             # <<<<<<<<<<<<<<
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)
  */
@@ -2642,7 +2651,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_6set_table_as(struct
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_14poker_analysis___pyx_scope_struct_1_set_table_as *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 37, __pyx_L1_error)
+    __PYX_ERR(0, 38, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -2650,56 +2659,58 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_6set_table_as(struct
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_table);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_table);
 
-  /* "poker_analysis.pyx":39
- * 	def set_table_as(self, table: set):
+  /* "poker_analysis.pyx":40
+ * 	def set_table_as(self, table):
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)             # <<<<<<<<<<<<<<
- * 		self._table = table
+ * 		self._table = tuple(table)
  * 		self.deck -= table
  */
-  __pyx_t_1 = __pyx_pf_14poker_analysis_14PokerEvaluator_12set_table_as_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_14poker_analysis_14PokerEvaluator_12set_table_as_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_table);
-  __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_table, ((PyObject*)__pyx_t_2));
+  __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_table, __pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":40
+  /* "poker_analysis.pyx":41
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)
- * 		self._table = table             # <<<<<<<<<<<<<<
+ * 		self._table = tuple(table)             # <<<<<<<<<<<<<<
  * 		self.deck -= table
  * 
  */
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_table);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_table);
+  __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_cur_scope->__pyx_v_table); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->_table);
   __Pyx_DECREF(__pyx_v_self->_table);
-  __pyx_v_self->_table = __pyx_cur_scope->__pyx_v_table;
+  __pyx_v_self->_table = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":41
+  /* "poker_analysis.pyx":42
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)
- * 		self._table = table
+ * 		self._table = tuple(table)
  * 		self.deck -= table             # <<<<<<<<<<<<<<
  * 
  * 	def update_table(self, card):
  */
-  __pyx_t_2 = PyNumber_InPlaceSubtract(__pyx_v_self->deck, __pyx_cur_scope->__pyx_v_table); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_InPlaceSubtract(__pyx_v_self->deck, __pyx_cur_scope->__pyx_v_table); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PySet_CheckExact(__pyx_t_2))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (!(likely(PySet_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->deck);
   __Pyx_DECREF(__pyx_v_self->deck);
   __pyx_v_self->deck = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":37
+  /* "poker_analysis.pyx":38
  * 		return number, color
  * 
- * 	def set_table_as(self, table: set):             # <<<<<<<<<<<<<<
+ * 	def set_table_as(self, table):             # <<<<<<<<<<<<<<
  * 		"""resets table of community cards to given set of cards"""
  * 		table = set(PokerEvaluator._normalize_card(card) for card in table)
  */
@@ -2719,7 +2730,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_6set_table_as(struct
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":43
+/* "poker_analysis.pyx":44
  * 		self.deck -= table
  * 
  * 	def update_table(self, card):             # <<<<<<<<<<<<<<
@@ -2753,41 +2764,14 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_8update_table(struct
   __Pyx_RefNannySetupContext("update_table", 0);
   __Pyx_INCREF(__pyx_v_card);
 
-  /* "poker_analysis.pyx":45
+  /* "poker_analysis.pyx":46
  * 	def update_table(self, card):
  * 		"""adds normalised card to a table of community cards"""
  * 		card = PokerEvaluator._normalize_card(card)             # <<<<<<<<<<<<<<
- * 		self._table.update(card)
+ * 		self._table + card
  * 		self.deck -= card
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_card) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_card);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF_SET(__pyx_v_card, __pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "poker_analysis.pyx":46
- * 		"""adds normalised card to a table of community cards"""
- * 		card = PokerEvaluator._normalize_card(card)
- * 		self._table.update(card)             # <<<<<<<<<<<<<<
- * 		self.deck -= card
- * 
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_table, __pyx_n_s_update); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2804,25 +2788,37 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_8update_table(struct
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF_SET(__pyx_v_card, __pyx_t_1);
+  __pyx_t_1 = 0;
 
   /* "poker_analysis.pyx":47
+ * 		"""adds normalised card to a table of community cards"""
  * 		card = PokerEvaluator._normalize_card(card)
- * 		self._table.update(card)
+ * 		self._table + card             # <<<<<<<<<<<<<<
+ * 		self.deck -= card
+ * 
+ */
+  __pyx_t_1 = PyNumber_Add(__pyx_v_self->_table, __pyx_v_card); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "poker_analysis.pyx":48
+ * 		card = PokerEvaluator._normalize_card(card)
+ * 		self._table + card
  * 		self.deck -= card             # <<<<<<<<<<<<<<
  * 
  * 	def update_hand(self, players_hand):
  */
-  __pyx_t_1 = PyNumber_InPlaceSubtract(__pyx_v_self->deck, __pyx_v_card); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_InPlaceSubtract(__pyx_v_self->deck, __pyx_v_card); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PySet_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 47, __pyx_L1_error)
+  if (!(likely(PySet_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->deck);
   __Pyx_DECREF(__pyx_v_self->deck);
   __pyx_v_self->deck = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":43
+  /* "poker_analysis.pyx":44
  * 		self.deck -= table
  * 
  * 	def update_table(self, card):             # <<<<<<<<<<<<<<
@@ -2846,7 +2842,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_8update_table(struct
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":49
+/* "poker_analysis.pyx":50
  * 		self.deck -= card
  * 
  * 	def update_hand(self, players_hand):             # <<<<<<<<<<<<<<
@@ -2869,11 +2865,11 @@ static PyObject *__pyx_pw_14poker_analysis_14PokerEvaluator_11update_hand(PyObje
 }
 static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "poker_analysis.pyx":51
+/* "poker_analysis.pyx":52
  * 	def update_hand(self, players_hand):
  * 		"""normalises cards and sets them as current cards of a player"""
  * 		players_hand = set(PokerEvaluator._normalize_card(card) for card in players_hand)             # <<<<<<<<<<<<<<
- * 		self._hand = players_hand
+ * 		self._hand = tuple(players_hand)
  * 		self.deck -= players_hand
  */
 
@@ -2889,7 +2885,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_11update_hand_genexp
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_14poker_analysis___pyx_scope_struct_4_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 51, __pyx_L1_error)
+    __PYX_ERR(0, 52, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -2897,7 +2893,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_11update_hand_genexp
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_update_hand_locals_genexpr, __pyx_n_s_poker_analysis); if (unlikely(!gen)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_update_hand_locals_genexpr, __pyx_n_s_poker_analysis); if (unlikely(!gen)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -2935,34 +2931,34 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2gener
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 51, __pyx_L1_error)
-  __pyx_r = PySet_New(NULL); if (unlikely(!__pyx_r)) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_r = PySet_New(NULL); if (unlikely(!__pyx_r)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_players_hand)) { __Pyx_RaiseClosureNameError("players_hand"); __PYX_ERR(0, 51, __pyx_L1_error) }
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_players_hand)) { __Pyx_RaiseClosureNameError("players_hand"); __PYX_ERR(0, 52, __pyx_L1_error) }
   if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_players_hand)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_players_hand)) {
     __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_players_hand; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_players_hand); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_players_hand); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 51, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 52, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 51, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 52, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -2972,7 +2968,7 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2gener
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 51, __pyx_L1_error)
+          else __PYX_ERR(0, 52, __pyx_L1_error)
         }
         break;
       }
@@ -2982,7 +2978,7 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2gener
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_card, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 51, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator), __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -2996,10 +2992,10 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2gener
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_cur_scope->__pyx_v_card) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_cur_scope->__pyx_v_card);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 51, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(PySet_Add(__pyx_r, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 51, __pyx_L1_error)
+    if (unlikely(PySet_Add(__pyx_r, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3025,7 +3021,7 @@ static PyObject *__pyx_gb_14poker_analysis_14PokerEvaluator_11update_hand_2gener
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":49
+/* "poker_analysis.pyx":50
  * 		self.deck -= card
  * 
  * 	def update_hand(self, players_hand):             # <<<<<<<<<<<<<<
@@ -3047,7 +3043,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_10update_hand(struct
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_14poker_analysis___pyx_scope_struct_3_update_hand *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 49, __pyx_L1_error)
+    __PYX_ERR(0, 50, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3055,16 +3051,16 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_10update_hand(struct
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_players_hand);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_players_hand);
 
-  /* "poker_analysis.pyx":51
+  /* "poker_analysis.pyx":52
  * 	def update_hand(self, players_hand):
  * 		"""normalises cards and sets them as current cards of a player"""
  * 		players_hand = set(PokerEvaluator._normalize_card(card) for card in players_hand)             # <<<<<<<<<<<<<<
- * 		self._hand = players_hand
+ * 		self._hand = tuple(players_hand)
  * 		self.deck -= players_hand
  */
-  __pyx_t_1 = __pyx_pf_14poker_analysis_14PokerEvaluator_11update_hand_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_14poker_analysis_14PokerEvaluator_11update_hand_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_players_hand);
@@ -3072,39 +3068,38 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_10update_hand(struct
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":52
+  /* "poker_analysis.pyx":53
  * 		"""normalises cards and sets them as current cards of a player"""
  * 		players_hand = set(PokerEvaluator._normalize_card(card) for card in players_hand)
- * 		self._hand = players_hand             # <<<<<<<<<<<<<<
+ * 		self._hand = tuple(players_hand)             # <<<<<<<<<<<<<<
  * 		self.deck -= players_hand
  * 
  */
-  if (!(likely(PySet_CheckExact(__pyx_cur_scope->__pyx_v_players_hand))||((__pyx_cur_scope->__pyx_v_players_hand) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_cur_scope->__pyx_v_players_hand)->tp_name), 0))) __PYX_ERR(0, 52, __pyx_L1_error)
-  __pyx_t_2 = __pyx_cur_scope->__pyx_v_players_hand;
-  __Pyx_INCREF(__pyx_t_2);
+  __pyx_t_2 = __Pyx_PySequence_Tuple(__pyx_cur_scope->__pyx_v_players_hand); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->_hand);
   __Pyx_DECREF(__pyx_v_self->_hand);
   __pyx_v_self->_hand = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":53
+  /* "poker_analysis.pyx":54
  * 		players_hand = set(PokerEvaluator._normalize_card(card) for card in players_hand)
- * 		self._hand = players_hand
+ * 		self._hand = tuple(players_hand)
  * 		self.deck -= players_hand             # <<<<<<<<<<<<<<
  * 
  * 	cdef int positions_to_calculate(self):
  */
-  __pyx_t_2 = PyNumber_InPlaceSubtract(__pyx_v_self->deck, __pyx_cur_scope->__pyx_v_players_hand); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_InPlaceSubtract(__pyx_v_self->deck, __pyx_cur_scope->__pyx_v_players_hand); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PySet_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (!(likely(PySet_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->deck);
   __Pyx_DECREF(__pyx_v_self->deck);
   __pyx_v_self->deck = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":49
+  /* "poker_analysis.pyx":50
  * 		self.deck -= card
  * 
  * 	def update_hand(self, players_hand):             # <<<<<<<<<<<<<<
@@ -3127,7 +3122,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_10update_hand(struct
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":55
+/* "poker_analysis.pyx":56
  * 		self.deck -= players_hand
  * 
  * 	cdef int positions_to_calculate(self):             # <<<<<<<<<<<<<<
@@ -3157,7 +3152,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("positions_to_calculate", 0);
 
-  /* "poker_analysis.pyx":59
+  /* "poker_analysis.pyx":60
  * 		"""returns number of possible combinations of full table times number of combinations for enemy cards"""
  * 
  * 		n_cards_left_in_deck = len(self.deck)             # <<<<<<<<<<<<<<
@@ -3168,16 +3163,16 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 59, __pyx_L1_error)
+    __PYX_ERR(0, 60, __pyx_L1_error)
   }
-  __pyx_t_2 = PySet_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_2 = PySet_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_n_cards_left_in_deck = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":60
+  /* "poker_analysis.pyx":61
  * 
  * 		n_cards_left_in_deck = len(self.deck)
  * 		n_cards_left_to_full_table = 5 - len(self._table)             # <<<<<<<<<<<<<<
@@ -3188,16 +3183,16 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 60, __pyx_L1_error)
+    __PYX_ERR(0, 61, __pyx_L1_error)
   }
-  __pyx_t_2 = PySet_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyInt_FromSsize_t((5 - __pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t((5 - __pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_n_cards_left_to_full_table = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":61
+  /* "poker_analysis.pyx":62
  * 		n_cards_left_in_deck = len(self.deck)
  * 		n_cards_left_to_full_table = 5 - len(self._table)
  * 		cdef int multiplier = 1             # <<<<<<<<<<<<<<
@@ -3206,7 +3201,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
  */
   __pyx_v_multiplier = 1;
 
-  /* "poker_analysis.pyx":62
+  /* "poker_analysis.pyx":63
  * 		n_cards_left_to_full_table = 5 - len(self._table)
  * 		cdef int multiplier = 1
  * 		cdef int denominator = 1             # <<<<<<<<<<<<<<
@@ -3215,22 +3210,22 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
  */
   __pyx_v_denominator = 1;
 
-  /* "poker_analysis.pyx":63
+  /* "poker_analysis.pyx":64
  * 		cdef int multiplier = 1
  * 		cdef int denominator = 1
  * 		for i in range(n_cards_left_to_full_table):             # <<<<<<<<<<<<<<
  * 			multiplier *= (n_cards_left_in_deck - i)
  * 			denominator *= (i+1)
  */
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_n_cards_left_to_full_table); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_n_cards_left_to_full_table); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_3 = __pyx_t_1; __Pyx_INCREF(__pyx_t_3); __pyx_t_2 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -3238,17 +3233,17 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
       if (likely(PyList_CheckExact(__pyx_t_3))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 64, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_2); __Pyx_INCREF(__pyx_t_1); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 64, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -3258,7 +3253,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 63, __pyx_L1_error)
+          else __PYX_ERR(0, 64, __pyx_L1_error)
         }
         break;
       }
@@ -3267,45 +3262,45 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "poker_analysis.pyx":64
+    /* "poker_analysis.pyx":65
  * 		cdef int denominator = 1
  * 		for i in range(n_cards_left_to_full_table):
  * 			multiplier *= (n_cards_left_in_deck - i)             # <<<<<<<<<<<<<<
  * 			denominator *= (i+1)
  * 
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_multiplier); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_multiplier); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyNumber_Subtract(__pyx_v_n_cards_left_in_deck, __pyx_v_i); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Subtract(__pyx_v_n_cards_left_in_deck, __pyx_v_i); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyNumber_InPlaceMultiply(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_InPlaceMultiply(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_6); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_6); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 65, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_v_multiplier = __pyx_t_7;
 
-    /* "poker_analysis.pyx":65
+    /* "poker_analysis.pyx":66
  * 		for i in range(n_cards_left_to_full_table):
  * 			multiplier *= (n_cards_left_in_deck - i)
  * 			denominator *= (i+1)             # <<<<<<<<<<<<<<
  * 
  * 		cards_to_choose_from_for_enemy = n_cards_left_in_deck - n_cards_left_to_full_table
  */
-    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_denominator); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_denominator); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_1 = PyNumber_InPlaceMultiply(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_InPlaceMultiply(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_denominator = __pyx_t_7;
 
-    /* "poker_analysis.pyx":63
+    /* "poker_analysis.pyx":64
  * 		cdef int multiplier = 1
  * 		cdef int denominator = 1
  * 		for i in range(n_cards_left_to_full_table):             # <<<<<<<<<<<<<<
@@ -3315,19 +3310,19 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "poker_analysis.pyx":67
+  /* "poker_analysis.pyx":68
  * 			denominator *= (i+1)
  * 
  * 		cards_to_choose_from_for_enemy = n_cards_left_in_deck - n_cards_left_to_full_table             # <<<<<<<<<<<<<<
  * 		for i in range(2):
  * 			multiplier *= (cards_to_choose_from_for_enemy - i)
  */
-  __pyx_t_3 = PyNumber_Subtract(__pyx_v_n_cards_left_in_deck, __pyx_v_n_cards_left_to_full_table); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Subtract(__pyx_v_n_cards_left_in_deck, __pyx_v_n_cards_left_to_full_table); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_cards_to_choose_from_for_enemy = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "poker_analysis.pyx":68
+  /* "poker_analysis.pyx":69
  * 
  * 		cards_to_choose_from_for_enemy = n_cards_left_in_deck - n_cards_left_to_full_table
  * 		for i in range(2):             # <<<<<<<<<<<<<<
@@ -3335,51 +3330,51 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
  * 			denominator *= (i+1)
  */
   for (__pyx_t_8 = 0; __pyx_t_8 < 2; __pyx_t_8+=1) {
-    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "poker_analysis.pyx":69
+    /* "poker_analysis.pyx":70
  * 		cards_to_choose_from_for_enemy = n_cards_left_in_deck - n_cards_left_to_full_table
  * 		for i in range(2):
  * 			multiplier *= (cards_to_choose_from_for_enemy - i)             # <<<<<<<<<<<<<<
  * 			denominator *= (i+1)
  * 
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_multiplier); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_multiplier); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyNumber_Subtract(__pyx_v_cards_to_choose_from_for_enemy, __pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Subtract(__pyx_v_cards_to_choose_from_for_enemy, __pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyNumber_InPlaceMultiply(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_InPlaceMultiply(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_multiplier = __pyx_t_7;
 
-    /* "poker_analysis.pyx":70
+    /* "poker_analysis.pyx":71
  * 		for i in range(2):
  * 			multiplier *= (cards_to_choose_from_for_enemy - i)
  * 			denominator *= (i+1)             # <<<<<<<<<<<<<<
  * 
  * 		return multiplier//denominator
  */
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_denominator); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_denominator); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyNumber_InPlaceMultiply(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_InPlaceMultiply(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_denominator = __pyx_t_7;
   }
 
-  /* "poker_analysis.pyx":72
+  /* "poker_analysis.pyx":73
  * 			denominator *= (i+1)
  * 
  * 		return multiplier//denominator             # <<<<<<<<<<<<<<
@@ -3388,16 +3383,16 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
  */
   if (unlikely(__pyx_v_denominator == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-    __PYX_ERR(0, 72, __pyx_L1_error)
+    __PYX_ERR(0, 73, __pyx_L1_error)
   }
   else if (sizeof(int) == sizeof(long) && (!(((int)-1) > 0)) && unlikely(__pyx_v_denominator == (int)-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_v_multiplier))) {
     PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-    __PYX_ERR(0, 72, __pyx_L1_error)
+    __PYX_ERR(0, 73, __pyx_L1_error)
   }
   __pyx_r = __Pyx_div_int(__pyx_v_multiplier, __pyx_v_denominator);
   goto __pyx_L0;
 
-  /* "poker_analysis.pyx":55
+  /* "poker_analysis.pyx":56
  * 		self.deck -= players_hand
  * 
  * 	cdef int positions_to_calculate(self):             # <<<<<<<<<<<<<<
@@ -3422,7 +3417,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_positions_to_calculate(stru
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":74
+/* "poker_analysis.pyx":75
  * 		return multiplier//denominator
  * 
  * 	cpdef double calculate_position(self):             # <<<<<<<<<<<<<<
@@ -3468,7 +3463,7 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_calculate_position); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_calculate_position); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_14poker_analysis_14PokerEvaluator_13calculate_position)) {
         __Pyx_INCREF(__pyx_t_1);
@@ -3484,10 +3479,10 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 74, __pyx_L1_error)
+        __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 75, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __pyx_r = __pyx_t_5;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3506,33 +3501,33 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
     #endif
   }
 
-  /* "poker_analysis.pyx":77
+  /* "poker_analysis.pyx":78
  * 		"""calculates percentage of how many times we win or make a draw compered to all position that we consider"""
  * 
  * 		cdef int win = 0             # <<<<<<<<<<<<<<
  * 		cdef int our_cards_value, enemy_cards_value
- * 		cdef set full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
+ * 		cdef tuple full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
  */
   __pyx_v_win = 0;
 
-  /* "poker_analysis.pyx":81
- * 		cdef set full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
+  /* "poker_analysis.pyx":82
+ * 		cdef tuple full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
  * 
  * 		for table_addition in combinations(self.deck, 5-len(self._table)):             # <<<<<<<<<<<<<<
- * 			full_table = self._table.union(table_addition)
- * 			rest_of_deck = self.deck - set(table_addition)
+ * 			full_table = self._table + table_addition
+ * 			rest_of_deck = tuple(self.deck - set(table_addition))
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_combinations); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_combinations); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_v_self->_table;
   __Pyx_INCREF(__pyx_t_3);
   if (unlikely(__pyx_t_3 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 81, __pyx_L1_error)
+    __PYX_ERR(0, 82, __pyx_L1_error)
   }
-  __pyx_t_6 = PySet_GET_SIZE(__pyx_t_3); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_GET_SIZE(__pyx_t_3); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyInt_FromSsize_t((5 - __pyx_t_6)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t((5 - __pyx_t_6)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_7 = 0;
@@ -3549,7 +3544,7 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_self->deck, __pyx_t_3};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3558,14 +3553,14 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_self->deck, __pyx_t_3};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -3576,7 +3571,7 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
@@ -3585,9 +3580,9 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_6 = 0;
     __pyx_t_9 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_6 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 82, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -3595,17 +3590,17 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 81, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 81, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -3615,7 +3610,7 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 81, __pyx_L1_error)
+          else __PYX_ERR(0, 82, __pyx_L1_error)
         }
         break;
       }
@@ -3624,114 +3619,97 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
     __Pyx_XDECREF_SET(__pyx_v_table_addition, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "poker_analysis.pyx":82
+    /* "poker_analysis.pyx":83
  * 
  * 		for table_addition in combinations(self.deck, 5-len(self._table)):
- * 			full_table = self._table.union(table_addition)             # <<<<<<<<<<<<<<
- * 			rest_of_deck = self.deck - set(table_addition)
+ * 			full_table = self._table + table_addition             # <<<<<<<<<<<<<<
+ * 			rest_of_deck = tuple(self.deck - set(table_addition))
  * 
  */
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->_table, __pyx_n_s_union); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Add(__pyx_v_self->_table, __pyx_v_table_addition); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    if (!(likely(PyTuple_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 83, __pyx_L1_error)
+    __Pyx_XDECREF_SET(__pyx_v_full_table, ((PyObject*)__pyx_t_1));
+    __pyx_t_1 = 0;
+
+    /* "poker_analysis.pyx":84
+ * 		for table_addition in combinations(self.deck, 5-len(self._table)):
+ * 			full_table = self._table + table_addition
+ * 			rest_of_deck = tuple(self.deck - set(table_addition))             # <<<<<<<<<<<<<<
+ * 
+ * 			our_seven_cards = full_table + self._hand
+ */
+    __pyx_t_1 = PySet_New(__pyx_v_table_addition); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_8 = PyNumber_Subtract(__pyx_v_self->deck, __pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PySequence_Tuple(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_rest_of_deck, ((PyObject*)__pyx_t_1));
+    __pyx_t_1 = 0;
+
+    /* "poker_analysis.pyx":86
+ * 			rest_of_deck = tuple(self.deck - set(table_addition))
+ * 
+ * 			our_seven_cards = full_table + self._hand             # <<<<<<<<<<<<<<
+ * 
+ * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(our_seven_cards)
+ */
+    __pyx_t_1 = PyNumber_Add(__pyx_v_full_table, __pyx_v_self->_hand); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_XDECREF_SET(__pyx_v_our_seven_cards, ((PyObject*)__pyx_t_1));
+    __pyx_t_1 = 0;
+
+    /* "poker_analysis.pyx":88
+ * 			our_seven_cards = full_table + self._hand
+ * 
+ * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(our_seven_cards)             # <<<<<<<<<<<<<<
+ * 
+ * 			for enemy_cards in combinations(rest_of_deck, 2):
+ */
+    __pyx_v_our_cards_value = __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_from_seven_cards(__pyx_v_our_seven_cards);
+
+    /* "poker_analysis.pyx":90
+ * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(our_seven_cards)
+ * 
+ * 			for enemy_cards in combinations(rest_of_deck, 2):             # <<<<<<<<<<<<<<
+ * 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
+ * 				enemy_seven_cards = full_table + enemy_cards
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_combinations); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_3 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_7 = 0;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
       __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_8);
       if (likely(__pyx_t_3)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
         __Pyx_INCREF(__pyx_t_3);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_8, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_3, __pyx_v_table_addition) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_table_addition);
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (!(likely(PySet_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 82, __pyx_L1_error)
-    __Pyx_XDECREF_SET(__pyx_v_full_table, ((PyObject*)__pyx_t_1));
-    __pyx_t_1 = 0;
-
-    /* "poker_analysis.pyx":83
- * 		for table_addition in combinations(self.deck, 5-len(self._table)):
- * 			full_table = self._table.union(table_addition)
- * 			rest_of_deck = self.deck - set(table_addition)             # <<<<<<<<<<<<<<
- * 
- * 			our_seven_cards = full_table.union(self._hand)
- */
-    __pyx_t_1 = PySet_New(__pyx_v_table_addition); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_8 = PyNumber_Subtract(__pyx_v_self->deck, __pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 83, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (!(likely(PySet_CheckExact(__pyx_t_8))||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_8)->tp_name), 0))) __PYX_ERR(0, 83, __pyx_L1_error)
-    __Pyx_XDECREF_SET(__pyx_v_rest_of_deck, ((PyObject*)__pyx_t_8));
-    __pyx_t_8 = 0;
-
-    /* "poker_analysis.pyx":85
- * 			rest_of_deck = self.deck - set(table_addition)
- * 
- * 			our_seven_cards = full_table.union(self._hand)             # <<<<<<<<<<<<<<
- * 
- * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(our_seven_cards))
- */
-    __pyx_t_8 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PySet_Type_union, __pyx_v_full_table, __pyx_v_self->_hand); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 85, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    if (!(likely(PySet_CheckExact(__pyx_t_8))||((__pyx_t_8) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_8)->tp_name), 0))) __PYX_ERR(0, 85, __pyx_L1_error)
-    __Pyx_XDECREF_SET(__pyx_v_our_seven_cards, ((PyObject*)__pyx_t_8));
-    __pyx_t_8 = 0;
-
-    /* "poker_analysis.pyx":87
- * 			our_seven_cards = full_table.union(self._hand)
- * 
- * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(our_seven_cards))             # <<<<<<<<<<<<<<
- * 
- * 			for enemy_cards in combinations(rest_of_deck, 2):
- */
-    __pyx_t_8 = PySequence_Tuple(__pyx_v_our_seven_cards); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 87, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_v_our_cards_value = __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_from_seven_cards(((PyObject*)__pyx_t_8));
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-
-    /* "poker_analysis.pyx":89
- * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(our_seven_cards))
- * 
- * 			for enemy_cards in combinations(rest_of_deck, 2):             # <<<<<<<<<<<<<<
- * 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
- * 				enemy_seven_cards = full_table.union(enemy_cards)
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_combinations); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = NULL;
-    __pyx_t_7 = 0;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_3)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_3);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
         __pyx_t_7 = 1;
       }
     }
     #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(__pyx_t_1)) {
+    if (PyFunction_Check(__pyx_t_8)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_rest_of_deck, __pyx_int_2};
-      __pyx_t_8 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_GOTREF(__pyx_t_8);
+      __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_8)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_rest_of_deck, __pyx_int_2};
-      __pyx_t_8 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_GOTREF(__pyx_t_8);
+      __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -3742,109 +3720,106 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
       __Pyx_INCREF(__pyx_int_2);
       __Pyx_GIVEREF(__pyx_int_2);
       PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_7, __pyx_int_2);
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (likely(PyList_CheckExact(__pyx_t_8)) || PyTuple_CheckExact(__pyx_t_8)) {
-      __pyx_t_1 = __pyx_t_8; __Pyx_INCREF(__pyx_t_1); __pyx_t_10 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
+      __pyx_t_8 = __pyx_t_1; __Pyx_INCREF(__pyx_t_8); __pyx_t_10 = 0;
       __pyx_t_11 = NULL;
     } else {
-      __pyx_t_10 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_11 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_10 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_11 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 90, __pyx_L1_error)
     }
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
       if (likely(!__pyx_t_11)) {
-        if (likely(PyList_CheckExact(__pyx_t_1))) {
-          if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        if (likely(PyList_CheckExact(__pyx_t_8))) {
+          if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_8)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_8 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_8); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_10); __Pyx_INCREF(__pyx_t_1); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
           #else
-          __pyx_t_8 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_8, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
-          if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+          if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_8)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_10); __Pyx_INCREF(__pyx_t_8); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_10); __Pyx_INCREF(__pyx_t_1); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
           #else
-          __pyx_t_8 = PySequence_ITEM(__pyx_t_1, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_8, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
       } else {
-        __pyx_t_8 = __pyx_t_11(__pyx_t_1);
-        if (unlikely(!__pyx_t_8)) {
+        __pyx_t_1 = __pyx_t_11(__pyx_t_8);
+        if (unlikely(!__pyx_t_1)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 89, __pyx_L1_error)
+            else __PYX_ERR(0, 90, __pyx_L1_error)
           }
           break;
         }
-        __Pyx_GOTREF(__pyx_t_8);
+        __Pyx_GOTREF(__pyx_t_1);
       }
-      __Pyx_XDECREF_SET(__pyx_v_enemy_cards, __pyx_t_8);
-      __pyx_t_8 = 0;
-
-      /* "poker_analysis.pyx":91
- * 			for enemy_cards in combinations(rest_of_deck, 2):
- * 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
- * 				enemy_seven_cards = full_table.union(enemy_cards)             # <<<<<<<<<<<<<<
- * 				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(enemy_seven_cards))
- * 				win += (our_cards_value >= enemy_cards_value)
- */
-      __pyx_t_8 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PySet_Type_union, __pyx_v_full_table, __pyx_v_enemy_cards); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      if (!(likely(PySet_CheckExact(__pyx_t_8))||((__pyx_t_8) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_8)->tp_name), 0))) __PYX_ERR(0, 91, __pyx_L1_error)
-      __Pyx_XDECREF_SET(__pyx_v_enemy_seven_cards, ((PyObject*)__pyx_t_8));
-      __pyx_t_8 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_enemy_cards, __pyx_t_1);
+      __pyx_t_1 = 0;
 
       /* "poker_analysis.pyx":92
+ * 			for enemy_cards in combinations(rest_of_deck, 2):
  * 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
- * 				enemy_seven_cards = full_table.union(enemy_cards)
- * 				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(enemy_seven_cards))             # <<<<<<<<<<<<<<
+ * 				enemy_seven_cards = full_table + enemy_cards             # <<<<<<<<<<<<<<
+ * 				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(enemy_seven_cards)
+ * 				win += (our_cards_value >= enemy_cards_value)
+ */
+      __pyx_t_1 = PyNumber_Add(__pyx_v_full_table, __pyx_v_enemy_cards); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      if (!(likely(PyTuple_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 92, __pyx_L1_error)
+      __Pyx_XDECREF_SET(__pyx_v_enemy_seven_cards, ((PyObject*)__pyx_t_1));
+      __pyx_t_1 = 0;
+
+      /* "poker_analysis.pyx":93
+ * 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
+ * 				enemy_seven_cards = full_table + enemy_cards
+ * 				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(enemy_seven_cards)             # <<<<<<<<<<<<<<
  * 				win += (our_cards_value >= enemy_cards_value)
  * 
  */
-      __pyx_t_8 = PySequence_Tuple(__pyx_v_enemy_seven_cards); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 92, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __pyx_v_enemy_cards_value = __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_from_seven_cards(((PyObject*)__pyx_t_8));
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __pyx_v_enemy_cards_value = __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_from_seven_cards(__pyx_v_enemy_seven_cards);
 
-      /* "poker_analysis.pyx":93
- * 				enemy_seven_cards = full_table.union(enemy_cards)
- * 				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(enemy_seven_cards))
+      /* "poker_analysis.pyx":94
+ * 				enemy_seven_cards = full_table + enemy_cards
+ * 				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(enemy_seven_cards)
  * 				win += (our_cards_value >= enemy_cards_value)             # <<<<<<<<<<<<<<
  * 
  * 		return round(win * 100 / self.positions_to_calculate(), 2)
  */
       __pyx_v_win = (__pyx_v_win + (__pyx_v_our_cards_value >= __pyx_v_enemy_cards_value));
 
-      /* "poker_analysis.pyx":89
- * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(our_seven_cards))
+      /* "poker_analysis.pyx":90
+ * 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(our_seven_cards)
  * 
  * 			for enemy_cards in combinations(rest_of_deck, 2):             # <<<<<<<<<<<<<<
  * 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
- * 				enemy_seven_cards = full_table.union(enemy_cards)
+ * 				enemy_seven_cards = full_table + enemy_cards
  */
     }
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "poker_analysis.pyx":81
- * 		cdef set full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
+    /* "poker_analysis.pyx":82
+ * 		cdef tuple full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
  * 
  * 		for table_addition in combinations(self.deck, 5-len(self._table)):             # <<<<<<<<<<<<<<
- * 			full_table = self._table.union(table_addition)
- * 			rest_of_deck = self.deck - set(table_addition)
+ * 			full_table = self._table + table_addition
+ * 			rest_of_deck = tuple(self.deck - set(table_addition))
  */
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "poker_analysis.pyx":95
+  /* "poker_analysis.pyx":96
  * 				win += (our_cards_value >= enemy_cards_value)
  * 
  * 		return round(win * 100 / self.positions_to_calculate(), 2)             # <<<<<<<<<<<<<<
@@ -3855,31 +3830,31 @@ static double __pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(struc
   __pyx_t_7 = ((struct __pyx_vtabstruct_14poker_analysis_PokerEvaluator *)__pyx_v_self->__pyx_vtab)->positions_to_calculate(__pyx_v_self);
   if (unlikely(__pyx_t_7 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-    __PYX_ERR(0, 95, __pyx_L1_error)
+    __PYX_ERR(0, 96, __pyx_L1_error)
   }
   else if (sizeof(long) == sizeof(long) && (!(((int)-1) > 0)) && unlikely(__pyx_t_7 == (int)-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_12))) {
     PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-    __PYX_ERR(0, 95, __pyx_L1_error)
+    __PYX_ERR(0, 96, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyInt_From_long(__Pyx_div_long(__pyx_t_12, __pyx_t_7)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_long(__Pyx_div_long(__pyx_t_12, __pyx_t_7)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_2);
   __Pyx_INCREF(__pyx_int_2);
   __Pyx_GIVEREF(__pyx_int_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_int_2);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_int_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_round, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_round, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_5;
   goto __pyx_L0;
 
-  /* "poker_analysis.pyx":74
+  /* "poker_analysis.pyx":75
  * 		return multiplier//denominator
  * 
  * 	cpdef double calculate_position(self):             # <<<<<<<<<<<<<<
@@ -3930,7 +3905,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_12calculate_position
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("calculate_position", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_f_14poker_analysis_14PokerEvaluator_calculate_position(__pyx_v_self, 1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -4085,7 +4060,7 @@ static PyObject *__pyx_pf_14poker_analysis_14PokerEvaluator_40value_of_best_hand
   return __pyx_r;
 }
 
-/* "poker_analysis.pyx":98
+/* "poker_analysis.pyx":99
  * 
  * 	@staticmethod
  * 	cdef int value_of_best_hand_type_from_seven_cards(tuple cards7):             # <<<<<<<<<<<<<<
@@ -4152,31 +4127,31 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_14poker_analysis___pyx_scope_struct_5_value_of_best_hand_type_from_seven_cards *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 98, __pyx_L1_error)
+    __PYX_ERR(0, 99, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
 
-  /* "poker_analysis.pyx":105
+  /* "poker_analysis.pyx":106
  * 		cdef list l_of_nums, numbers,hand_types_on_table, value_of_type
  * 
  * 		l_of_nums = [num for num, _ in cards7]             # <<<<<<<<<<<<<<
  * 		cdef set set_of_nums = set(l_of_nums)
  * 
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_v_cards7 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 105, __pyx_L1_error)
+    __PYX_ERR(0, 106, __pyx_L1_error)
   }
   __pyx_t_2 = __pyx_v_cards7; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
   for (;;) {
     if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_4); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_4); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 106, __pyx_L1_error)
     #else
-    __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     #endif
     if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
@@ -4185,7 +4160,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 105, __pyx_L1_error)
+        __PYX_ERR(0, 106, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -4198,15 +4173,15 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 105, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 105, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 105, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -4214,7 +4189,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 106, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -4222,52 +4197,52 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 105, __pyx_L1_error)
+      __PYX_ERR(0, 106, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_num, __pyx_t_5);
     __pyx_t_5 = 0;
     __Pyx_XDECREF_SET(__pyx_v__, __pyx_t_6);
     __pyx_t_6 = 0;
-    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_v_num))) __PYX_ERR(0, 105, __pyx_L1_error)
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_v_num))) __PYX_ERR(0, 106, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_l_of_nums = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":106
+  /* "poker_analysis.pyx":107
  * 
  * 		l_of_nums = [num for num, _ in cards7]
  * 		cdef set set_of_nums = set(l_of_nums)             # <<<<<<<<<<<<<<
  * 
  * 		# if there is an ase we want to include its both forms as int: 1 and 14
  */
-  __pyx_t_1 = PySet_New(__pyx_v_l_of_nums); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = PySet_New(__pyx_v_l_of_nums); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_set_of_nums = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":109
+  /* "poker_analysis.pyx":110
  * 
  * 		# if there is an ase we want to include its both forms as int: 1 and 14
  * 		if 14 in set_of_nums:             # <<<<<<<<<<<<<<
  * 			set_of_nums.add(1)
  * 
  */
-  __pyx_t_9 = (__Pyx_PySet_ContainsTF(__pyx_int_14, __pyx_v_set_of_nums, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_9 = (__Pyx_PySet_ContainsTF(__pyx_int_14, __pyx_v_set_of_nums, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_t_10 = (__pyx_t_9 != 0);
   if (__pyx_t_10) {
 
-    /* "poker_analysis.pyx":110
+    /* "poker_analysis.pyx":111
  * 		# if there is an ase we want to include its both forms as int: 1 and 14
  * 		if 14 in set_of_nums:
  * 			set_of_nums.add(1)             # <<<<<<<<<<<<<<
  * 
  * 		numbers = sorted(set_of_nums)
  */
-    __pyx_t_11 = PySet_Add(__pyx_v_set_of_nums, __pyx_int_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 110, __pyx_L1_error)
+    __pyx_t_11 = PySet_Add(__pyx_v_set_of_nums, __pyx_int_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 111, __pyx_L1_error)
 
-    /* "poker_analysis.pyx":109
+    /* "poker_analysis.pyx":110
  * 
  * 		# if there is an ase we want to include its both forms as int: 1 and 14
  * 		if 14 in set_of_nums:             # <<<<<<<<<<<<<<
@@ -4276,22 +4251,22 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
  */
   }
 
-  /* "poker_analysis.pyx":112
+  /* "poker_analysis.pyx":113
  * 			set_of_nums.add(1)
  * 
  * 		numbers = sorted(set_of_nums)             # <<<<<<<<<<<<<<
  * 		cdef int high_card = numbers[-1]
  * 
  */
-  __pyx_t_2 = PySequence_List(__pyx_v_set_of_nums); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_2 = PySequence_List(__pyx_v_set_of_nums); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_1 = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_11 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_11 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_v_numbers = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "poker_analysis.pyx":113
+  /* "poker_analysis.pyx":114
  * 
  * 		numbers = sorted(set_of_nums)
  * 		cdef int high_card = numbers[-1]             # <<<<<<<<<<<<<<
@@ -4300,89 +4275,89 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
  */
   if (unlikely(__pyx_v_numbers == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 113, __pyx_L1_error)
+    __PYX_ERR(0, 114, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_numbers, -1L, long, 1, __Pyx_PyInt_From_long, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_numbers, -1L, long, 1, __Pyx_PyInt_From_long, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_high_card = __pyx_t_12;
 
   /* "poker_analysis.pyx":117
+ * 
  * 		# init helper variables
- * 		cdef int pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush
- * 		pair = 1             # <<<<<<<<<<<<<<
- * 		two_pair = 2
- * 		three_of_a_kind = 3
+ * 		cdef int pair = 1             # <<<<<<<<<<<<<<
+ * 		cdef int two_pair = 2
+ * 		cdef int three_of_a_kind = 3
  */
   __pyx_v_pair = 1;
 
   /* "poker_analysis.pyx":118
- * 		cdef int pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush
- * 		pair = 1
- * 		two_pair = 2             # <<<<<<<<<<<<<<
- * 		three_of_a_kind = 3
- * 		straight = 4
+ * 		# init helper variables
+ * 		cdef int pair = 1
+ * 		cdef int two_pair = 2             # <<<<<<<<<<<<<<
+ * 		cdef int three_of_a_kind = 3
+ * 		cdef int straight = 4
  */
   __pyx_v_two_pair = 2;
 
   /* "poker_analysis.pyx":119
- * 		pair = 1
- * 		two_pair = 2
- * 		three_of_a_kind = 3             # <<<<<<<<<<<<<<
- * 		straight = 4
- * 		flush = 5
+ * 		cdef int pair = 1
+ * 		cdef int two_pair = 2
+ * 		cdef int three_of_a_kind = 3             # <<<<<<<<<<<<<<
+ * 		cdef int straight = 4
+ * 		cdef int flush = 5
  */
   __pyx_v_three_of_a_kind = 3;
 
   /* "poker_analysis.pyx":120
- * 		two_pair = 2
- * 		three_of_a_kind = 3
- * 		straight = 4             # <<<<<<<<<<<<<<
- * 		flush = 5
- * 		full_house = 6
+ * 		cdef int two_pair = 2
+ * 		cdef int three_of_a_kind = 3
+ * 		cdef int straight = 4             # <<<<<<<<<<<<<<
+ * 		cdef int flush = 5
+ * 		cdef int full_house = 6
  */
   __pyx_v_straight = 4;
 
   /* "poker_analysis.pyx":121
- * 		three_of_a_kind = 3
- * 		straight = 4
- * 		flush = 5             # <<<<<<<<<<<<<<
- * 		full_house = 6
- * 		four_of_a_kind = 7
+ * 		cdef int three_of_a_kind = 3
+ * 		cdef int straight = 4
+ * 		cdef int flush = 5             # <<<<<<<<<<<<<<
+ * 		cdef int full_house = 6
+ * 		cdef int four_of_a_kind = 7
  */
   __pyx_v_flush = 5;
 
   /* "poker_analysis.pyx":122
- * 		straight = 4
- * 		flush = 5
- * 		full_house = 6             # <<<<<<<<<<<<<<
- * 		four_of_a_kind = 7
- * 		straight_flush = 8
+ * 		cdef int straight = 4
+ * 		cdef int flush = 5
+ * 		cdef int full_house = 6             # <<<<<<<<<<<<<<
+ * 		cdef int four_of_a_kind = 7
+ * 		cdef int straight_flush = 8
  */
   __pyx_v_full_house = 6;
 
   /* "poker_analysis.pyx":123
- * 		flush = 5
- * 		full_house = 6
- * 		four_of_a_kind = 7             # <<<<<<<<<<<<<<
- * 		straight_flush = 8
+ * 		cdef int flush = 5
+ * 		cdef int full_house = 6
+ * 		cdef int four_of_a_kind = 7             # <<<<<<<<<<<<<<
+ * 		cdef int straight_flush = 8
  * 		hand_types_on_table = [False for _ in range(9)]
  */
   __pyx_v_four_of_a_kind = 7;
 
   /* "poker_analysis.pyx":124
- * 		full_house = 6
- * 		four_of_a_kind = 7
- * 		straight_flush = 8             # <<<<<<<<<<<<<<
+ * 		cdef int full_house = 6
+ * 		cdef int four_of_a_kind = 7
+ * 		cdef int straight_flush = 8             # <<<<<<<<<<<<<<
  * 		hand_types_on_table = [False for _ in range(9)]
  * 		hand_types_on_table[0] = True
  */
   __pyx_v_straight_flush = 8;
 
   /* "poker_analysis.pyx":125
- * 		four_of_a_kind = 7
- * 		straight_flush = 8
+ * 		cdef int four_of_a_kind = 7
+ * 		cdef int straight_flush = 8
  * 		hand_types_on_table = [False for _ in range(9)]             # <<<<<<<<<<<<<<
  * 		hand_types_on_table[0] = True
  * 		value_of_type = [0 for _ in range(9)]
@@ -4401,7 +4376,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
   __pyx_t_1 = 0;
 
   /* "poker_analysis.pyx":126
- * 		straight_flush = 8
+ * 		cdef int straight_flush = 8
  * 		hand_types_on_table = [False for _ in range(9)]
  * 		hand_types_on_table[0] = True             # <<<<<<<<<<<<<<
  * 		value_of_type = [0 for _ in range(9)]
@@ -5276,7 +5251,7 @@ static int __pyx_f_14poker_analysis_14PokerEvaluator_value_of_best_hand_type_fro
     }
   }
 
-  /* "poker_analysis.pyx":98
+  /* "poker_analysis.pyx":99
  * 
  * 	@staticmethod
  * 	cdef int value_of_best_hand_type_from_seven_cards(tuple cards7):             # <<<<<<<<<<<<<<
@@ -6878,7 +6853,7 @@ static PyObject *__pyx_f_14poker_analysis___pyx_unpickle_PokerEvaluator__set_sta
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PySet_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v___pyx_result->_hand);
   __Pyx_DECREF(__pyx_v___pyx_result->_hand);
@@ -6890,7 +6865,7 @@ static PyObject *__pyx_f_14poker_analysis___pyx_unpickle_PokerEvaluator__set_sta
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PySet_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "set", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v___pyx_result->_table);
   __Pyx_DECREF(__pyx_v___pyx_result->_table);
@@ -7010,9 +6985,9 @@ static PyObject *__pyx_tp_new_14poker_analysis_PokerEvaluator(PyTypeObject *t, C
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_14poker_analysis_PokerEvaluator *)o);
   p->__pyx_vtab = __pyx_vtabptr_14poker_analysis_PokerEvaluator;
-  p->_table = ((PyObject*)Py_None); Py_INCREF(Py_None);
-  p->_hand = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->deck = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->_hand = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->_table = ((PyObject*)Py_None); Py_INCREF(Py_None);
   return o;
 }
 
@@ -7024,23 +6999,23 @@ static void __pyx_tp_dealloc_14poker_analysis_PokerEvaluator(PyObject *o) {
   }
   #endif
   PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->_table);
-  Py_CLEAR(p->_hand);
   Py_CLEAR(p->deck);
+  Py_CLEAR(p->_hand);
+  Py_CLEAR(p->_table);
   (*Py_TYPE(o)->tp_free)(o);
 }
 
 static int __pyx_tp_traverse_14poker_analysis_PokerEvaluator(PyObject *o, visitproc v, void *a) {
   int e;
   struct __pyx_obj_14poker_analysis_PokerEvaluator *p = (struct __pyx_obj_14poker_analysis_PokerEvaluator *)o;
-  if (p->_table) {
-    e = (*v)(p->_table, a); if (e) return e;
+  if (p->deck) {
+    e = (*v)(p->deck, a); if (e) return e;
   }
   if (p->_hand) {
     e = (*v)(p->_hand, a); if (e) return e;
   }
-  if (p->deck) {
-    e = (*v)(p->deck, a); if (e) return e;
+  if (p->_table) {
+    e = (*v)(p->_table, a); if (e) return e;
   }
   return 0;
 }
@@ -7048,14 +7023,14 @@ static int __pyx_tp_traverse_14poker_analysis_PokerEvaluator(PyObject *o, visitp
 static int __pyx_tp_clear_14poker_analysis_PokerEvaluator(PyObject *o) {
   PyObject* tmp;
   struct __pyx_obj_14poker_analysis_PokerEvaluator *p = (struct __pyx_obj_14poker_analysis_PokerEvaluator *)o;
-  tmp = ((PyObject*)p->_table);
-  p->_table = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->deck);
+  p->deck = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->_hand);
   p->_hand = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->deck);
-  p->deck = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->_table);
+  p->_table = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
@@ -7292,7 +7267,7 @@ static int __pyx_tp_clear_14poker_analysis___pyx_scope_struct_1_set_table_as(PyO
   PyObject* tmp;
   struct __pyx_obj_14poker_analysis___pyx_scope_struct_1_set_table_as *p = (struct __pyx_obj_14poker_analysis___pyx_scope_struct_1_set_table_as *)o;
   tmp = ((PyObject*)p->__pyx_v_table);
-  p->__pyx_v_table = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->__pyx_v_table = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   return 0;
 }
@@ -8170,7 +8145,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_stringsource, __pyx_k_stringsource, sizeof(__pyx_k_stringsource), 0, 0, 1, 0},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
-  {&__pyx_n_s_union, __pyx_k_union, sizeof(__pyx_k_union), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
   {&__pyx_n_s_update_hand_locals_genexpr, __pyx_k_update_hand_locals_genexpr, sizeof(__pyx_k_update_hand_locals_genexpr), 0, 0, 1, 1},
   {&__pyx_n_s_update_hand_type_on_table, __pyx_k_update_hand_type_on_table, sizeof(__pyx_k_update_hand_type_on_table), 0, 0, 1, 1},
@@ -8178,9 +8152,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 31, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 16, __pyx_L1_error)
-  __pyx_builtin_round = __Pyx_GetBuiltinName(__pyx_n_s_round); if (!__pyx_builtin_round) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_builtin_round = __Pyx_GetBuiltinName(__pyx_n_s_round); if (!__pyx_builtin_round) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_builtin_max = __Pyx_GetBuiltinName(__pyx_n_s_max); if (!__pyx_builtin_max) __PYX_ERR(0, 213, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -8214,17 +8188,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "poker_analysis.pyx":31
+  /* "poker_analysis.pyx":32
  * 
  * 	@staticmethod
  * 	def _normalize_card(card):             # <<<<<<<<<<<<<<
  * 		"""takes a tuple (str, str) and normalises it to make it consistent across code, returns (int, int) tuple"""
  * 		number = PokerEvaluator.CARD_VALUES[card[0]]
  */
-  __pyx_tuple__4 = PyTuple_Pack(3, __pyx_n_s_card, __pyx_n_s_number, __pyx_n_s_color); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(3, __pyx_n_s_card, __pyx_n_s_number, __pyx_n_s_color); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_poker_analysis_pyx, __pyx_n_s_normalize_card, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_poker_analysis_pyx, __pyx_n_s_normalize_card, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 32, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_PokerEvaluator(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
@@ -8244,7 +8218,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   __pyx_umethod_PyList_Type_count.type = (PyObject*)&PyList_Type;
-  __pyx_umethod_PySet_Type_union.type = (PyObject*)&PySet_Type;
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -8320,7 +8293,7 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PokerEvaluator, (PyObject *)&__pyx_type_14poker_analysis_PokerEvaluator) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_14poker_analysis_PokerEvaluator) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __pyx_ptype_14poker_analysis_PokerEvaluator = &__pyx_type_14poker_analysis_PokerEvaluator;
-  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct__genexpr) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct__genexpr) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_14poker_analysis___pyx_scope_struct__genexpr.tp_print = 0;
   #endif
@@ -8328,7 +8301,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_14poker_analysis___pyx_scope_struct__genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_14poker_analysis___pyx_scope_struct__genexpr = &__pyx_type_14poker_analysis___pyx_scope_struct__genexpr;
-  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_1_set_table_as) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_1_set_table_as) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_14poker_analysis___pyx_scope_struct_1_set_table_as.tp_print = 0;
   #endif
@@ -8336,7 +8309,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_14poker_analysis___pyx_scope_struct_1_set_table_as.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_14poker_analysis___pyx_scope_struct_1_set_table_as = &__pyx_type_14poker_analysis___pyx_scope_struct_1_set_table_as;
-  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_2_genexpr) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_2_genexpr) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_14poker_analysis___pyx_scope_struct_2_genexpr.tp_print = 0;
   #endif
@@ -8344,7 +8317,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_14poker_analysis___pyx_scope_struct_2_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_14poker_analysis___pyx_scope_struct_2_genexpr = &__pyx_type_14poker_analysis___pyx_scope_struct_2_genexpr;
-  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_3_update_hand) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_3_update_hand) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_14poker_analysis___pyx_scope_struct_3_update_hand.tp_print = 0;
   #endif
@@ -8352,7 +8325,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_14poker_analysis___pyx_scope_struct_3_update_hand.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_14poker_analysis___pyx_scope_struct_3_update_hand = &__pyx_type_14poker_analysis___pyx_scope_struct_3_update_hand;
-  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_4_genexpr) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_4_genexpr) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_14poker_analysis___pyx_scope_struct_4_genexpr.tp_print = 0;
   #endif
@@ -8360,7 +8333,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_14poker_analysis___pyx_scope_struct_4_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_14poker_analysis___pyx_scope_struct_4_genexpr = &__pyx_type_14poker_analysis___pyx_scope_struct_4_genexpr;
-  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_5_value_of_best_hand_type_from_seven_cards) < 0) __PYX_ERR(0, 98, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_14poker_analysis___pyx_scope_struct_5_value_of_best_hand_type_from_seven_cards) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_14poker_analysis___pyx_scope_struct_5_value_of_best_hand_type_from_seven_cards.tp_print = 0;
   #endif
@@ -8672,7 +8645,7 @@ if (!__Pyx_RefNanny) {
  * 		'A': 14,
  * 		**{str(n): n for n in range(2, 11)}             # <<<<<<<<<<<<<<
  * 	}
- * 	cdef set _table, _hand, deck
+ * 	cdef set deck
  */
     __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -8699,32 +8672,32 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_14poker_analysis_PokerEvaluator);
 
-  /* "poker_analysis.pyx":31
+  /* "poker_analysis.pyx":32
  * 
  * 	@staticmethod
  * 	def _normalize_card(card):             # <<<<<<<<<<<<<<
  * 		"""takes a tuple (str, str) and normalises it to make it consistent across code, returns (int, int) tuple"""
  * 		number = PokerEvaluator.CARD_VALUES[card[0]]
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_14poker_analysis_14PokerEvaluator_5_normalize_card, NULL, __pyx_n_s_poker_analysis); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_14poker_analysis_14PokerEvaluator_5_normalize_card, NULL, __pyx_n_s_poker_analysis); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator->tp_dict, __pyx_n_s_normalize_card, __pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator->tp_dict, __pyx_n_s_normalize_card, __pyx_t_2) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_14poker_analysis_PokerEvaluator);
 
-  /* "poker_analysis.pyx":30
+  /* "poker_analysis.pyx":31
  * 		self.deck = set(PokerEvaluator._normalize_card((num, col)) for num in PokerEvaluator.CARD_VALUES for col in PokerEvaluator.SUITES)
  * 
  * 	@staticmethod             # <<<<<<<<<<<<<<
  * 	def _normalize_card(card):
  * 		"""takes a tuple (str, str) and normalises it to make it consistent across code, returns (int, int) tuple"""
  */
-  __Pyx_GetNameInClass(__pyx_t_2, (PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator, __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GetNameInClass(__pyx_t_2, (PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator, __pyx_n_s_normalize_card); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_staticmethod, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_staticmethod, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator->tp_dict, __pyx_n_s_normalize_card, __pyx_t_1) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_14poker_analysis_PokerEvaluator->tp_dict, __pyx_n_s_normalize_card, __pyx_t_1) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_14poker_analysis_PokerEvaluator);
 
@@ -9392,113 +9365,6 @@ static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
 }
 #endif
 
-/* ArgTypeTest */
-static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact)
-{
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    else if (exact) {
-        #if PY_MAJOR_VERSION == 2
-        if ((type == &PyBaseString_Type) && likely(__Pyx_PyBaseString_CheckExact(obj))) return 1;
-        #endif
-    }
-    else {
-        if (likely(__Pyx_TypeCheck(obj, type))) return 1;
-    }
-    PyErr_Format(PyExc_TypeError,
-        "Argument '%.200s' has incorrect type (expected %.200s, got %.200s)",
-        name, type->tp_name, Py_TYPE(obj)->tp_name);
-    return 0;
-}
-
-/* IterFinish */
-static CYTHON_INLINE int __Pyx_IterFinish(void) {
-#if CYTHON_FAST_THREAD_STATE
-    PyThreadState *tstate = __Pyx_PyThreadState_Current;
-    PyObject* exc_type = tstate->curexc_type;
-    if (unlikely(exc_type)) {
-        if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) {
-            PyObject *exc_value, *exc_tb;
-            exc_value = tstate->curexc_value;
-            exc_tb = tstate->curexc_traceback;
-            tstate->curexc_type = 0;
-            tstate->curexc_value = 0;
-            tstate->curexc_traceback = 0;
-            Py_DECREF(exc_type);
-            Py_XDECREF(exc_value);
-            Py_XDECREF(exc_tb);
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-    return 0;
-#else
-    if (unlikely(PyErr_Occurred())) {
-        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
-            PyErr_Clear();
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-    return 0;
-#endif
-}
-
-/* set_iter */
-static CYTHON_INLINE PyObject* __Pyx_set_iterator(PyObject* iterable, int is_set,
-                                                  Py_ssize_t* p_orig_length, int* p_source_is_set) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    is_set = is_set || likely(PySet_CheckExact(iterable) || PyFrozenSet_CheckExact(iterable));
-    *p_source_is_set = is_set;
-    if (likely(is_set)) {
-        *p_orig_length = PySet_Size(iterable);
-        Py_INCREF(iterable);
-        return iterable;
-    }
-#else
-    (void)is_set;
-    *p_source_is_set = 0;
-#endif
-    *p_orig_length = 0;
-    return PyObject_GetIter(iterable);
-}
-static CYTHON_INLINE int __Pyx_set_iter_next(
-        PyObject* iter_obj, Py_ssize_t orig_length,
-        Py_ssize_t* ppos, PyObject **value,
-        int source_is_set) {
-    if (!CYTHON_COMPILING_IN_CPYTHON || unlikely(!source_is_set)) {
-        *value = PyIter_Next(iter_obj);
-        if (unlikely(!*value)) {
-            return __Pyx_IterFinish();
-        }
-        (void)orig_length;
-        (void)ppos;
-        return 1;
-    }
-#if CYTHON_COMPILING_IN_CPYTHON
-    if (unlikely(PySet_GET_SIZE(iter_obj) != orig_length)) {
-        PyErr_SetString(
-            PyExc_RuntimeError,
-            "set changed size during iteration");
-        return -1;
-    }
-    {
-        Py_hash_t hash;
-        int ret = _PySet_NextEntry(iter_obj, ppos, value, &hash);
-        assert (ret != -1);
-        if (likely(ret)) {
-            Py_INCREF(*value);
-            return 1;
-        }
-    }
-#endif
-    return 0;
-}
-
 /* None */
 static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname) {
     PyErr_Format(PyExc_NameError, "free variable '%s' referenced before assignment in enclosing scope", varname);
@@ -9763,78 +9629,6 @@ static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
     return __Pyx_GetBuiltinName(name);
 }
 
-/* UnpackUnboundCMethod */
-static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
-    PyObject *method;
-    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
-    if (unlikely(!method))
-        return -1;
-    target->method = method;
-#if CYTHON_COMPILING_IN_CPYTHON
-    #if PY_MAJOR_VERSION >= 3
-    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
-    #endif
-    {
-        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
-        target->func = descr->d_method->ml_meth;
-        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
-    }
-#endif
-    return 0;
-}
-
-/* CallUnboundCMethod1 */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg) {
-    if (likely(cfunc->func)) {
-        int flag = cfunc->flag;
-        if (flag == METH_O) {
-            return (*(cfunc->func))(self, arg);
-        } else if (PY_VERSION_HEX >= 0x030600B1 && flag == METH_FASTCALL) {
-            if (PY_VERSION_HEX >= 0x030700A0) {
-                return (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)cfunc->func)(self, &arg, 1);
-            } else {
-                return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
-            }
-        } else if (PY_VERSION_HEX >= 0x030700A0 && flag == (METH_FASTCALL | METH_KEYWORDS)) {
-            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
-        }
-    }
-    return __Pyx__CallUnboundCMethod1(cfunc, self, arg);
-}
-#endif
-static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg){
-    PyObject *args, *result = NULL;
-    if (unlikely(!cfunc->func && !cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
-#if CYTHON_COMPILING_IN_CPYTHON
-    if (cfunc->func && (cfunc->flag & METH_VARARGS)) {
-        args = PyTuple_New(1);
-        if (unlikely(!args)) goto bad;
-        Py_INCREF(arg);
-        PyTuple_SET_ITEM(args, 0, arg);
-        if (cfunc->flag & METH_KEYWORDS)
-            result = (*(PyCFunctionWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, NULL);
-        else
-            result = (*cfunc->func)(self, args);
-    } else {
-        args = PyTuple_New(2);
-        if (unlikely(!args)) goto bad;
-        Py_INCREF(self);
-        PyTuple_SET_ITEM(args, 0, self);
-        Py_INCREF(arg);
-        PyTuple_SET_ITEM(args, 1, arg);
-        result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
-    }
-#else
-    args = PyTuple_Pack(2, self, arg);
-    if (unlikely(!args)) goto bad;
-    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
-#endif
-bad:
-    Py_XDECREF(args);
-    return result;
-}
-
 /* None */
 static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
     long q = a / b;
@@ -9903,6 +9697,41 @@ static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
     PyErr_Format(PyExc_ValueError,
                  "need more than %" CYTHON_FORMAT_SSIZE_T "d value%.1s to unpack",
                  index, (index == 1) ? "" : "s");
+}
+
+/* IterFinish */
+static CYTHON_INLINE int __Pyx_IterFinish(void) {
+#if CYTHON_FAST_THREAD_STATE
+    PyThreadState *tstate = __Pyx_PyThreadState_Current;
+    PyObject* exc_type = tstate->curexc_type;
+    if (unlikely(exc_type)) {
+        if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) {
+            PyObject *exc_value, *exc_tb;
+            exc_value = tstate->curexc_value;
+            exc_tb = tstate->curexc_traceback;
+            tstate->curexc_type = 0;
+            tstate->curexc_value = 0;
+            tstate->curexc_traceback = 0;
+            Py_DECREF(exc_type);
+            Py_XDECREF(exc_value);
+            Py_XDECREF(exc_tb);
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#else
+    if (unlikely(PyErr_Occurred())) {
+        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
+            PyErr_Clear();
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#endif
 }
 
 /* UnpackItemEndCheck */
@@ -10627,6 +10456,78 @@ static PyObject *__Pyx_CyFunction_New(PyMethodDef *ml, int flags, PyObject* qual
     return op;
 }
 
+/* UnpackUnboundCMethod */
+static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
+    PyObject *method;
+    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
+    if (unlikely(!method))
+        return -1;
+    target->method = method;
+#if CYTHON_COMPILING_IN_CPYTHON
+    #if PY_MAJOR_VERSION >= 3
+    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
+    #endif
+    {
+        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
+        target->func = descr->d_method->ml_meth;
+        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
+    }
+#endif
+    return 0;
+}
+
+/* CallUnboundCMethod1 */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg) {
+    if (likely(cfunc->func)) {
+        int flag = cfunc->flag;
+        if (flag == METH_O) {
+            return (*(cfunc->func))(self, arg);
+        } else if (PY_VERSION_HEX >= 0x030600B1 && flag == METH_FASTCALL) {
+            if (PY_VERSION_HEX >= 0x030700A0) {
+                return (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)cfunc->func)(self, &arg, 1);
+            } else {
+                return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+            }
+        } else if (PY_VERSION_HEX >= 0x030700A0 && flag == (METH_FASTCALL | METH_KEYWORDS)) {
+            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+        }
+    }
+    return __Pyx__CallUnboundCMethod1(cfunc, self, arg);
+}
+#endif
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg){
+    PyObject *args, *result = NULL;
+    if (unlikely(!cfunc->func && !cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (cfunc->func && (cfunc->flag & METH_VARARGS)) {
+        args = PyTuple_New(1);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 0, arg);
+        if (cfunc->flag & METH_KEYWORDS)
+            result = (*(PyCFunctionWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, NULL);
+        else
+            result = (*cfunc->func)(self, args);
+    } else {
+        args = PyTuple_New(2);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(self);
+        PyTuple_SET_ITEM(args, 0, self);
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 1, arg);
+        result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+    }
+#else
+    args = PyTuple_Pack(2, self, arg);
+    if (unlikely(!args)) goto bad;
+    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+#endif
+bad:
+    Py_XDECREF(args);
+    return result;
+}
+
 /* PyIntBinop */
 #if !CYTHON_COMPILING_IN_PYPY
 static PyObject* __Pyx_PyInt_SubtractCObj(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
@@ -10809,6 +10710,57 @@ static CYTHON_INLINE PyObject* __Pyx_PyTuple_GetSlice(
     return dest;
 }
 #endif
+
+/* set_iter */
+static CYTHON_INLINE PyObject* __Pyx_set_iterator(PyObject* iterable, int is_set,
+                                                  Py_ssize_t* p_orig_length, int* p_source_is_set) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    is_set = is_set || likely(PySet_CheckExact(iterable) || PyFrozenSet_CheckExact(iterable));
+    *p_source_is_set = is_set;
+    if (likely(is_set)) {
+        *p_orig_length = PySet_Size(iterable);
+        Py_INCREF(iterable);
+        return iterable;
+    }
+#else
+    (void)is_set;
+    *p_source_is_set = 0;
+#endif
+    *p_orig_length = 0;
+    return PyObject_GetIter(iterable);
+}
+static CYTHON_INLINE int __Pyx_set_iter_next(
+        PyObject* iter_obj, Py_ssize_t orig_length,
+        Py_ssize_t* ppos, PyObject **value,
+        int source_is_set) {
+    if (!CYTHON_COMPILING_IN_CPYTHON || unlikely(!source_is_set)) {
+        *value = PyIter_Next(iter_obj);
+        if (unlikely(!*value)) {
+            return __Pyx_IterFinish();
+        }
+        (void)orig_length;
+        (void)ppos;
+        return 1;
+    }
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (unlikely(PySet_GET_SIZE(iter_obj) != orig_length)) {
+        PyErr_SetString(
+            PyExc_RuntimeError,
+            "set changed size during iteration");
+        return -1;
+    }
+    {
+        Py_hash_t hash;
+        int ret = _PySet_NextEntry(iter_obj, ppos, value, &hash);
+        assert (ret != -1);
+        if (likely(ret)) {
+            Py_INCREF(*value);
+            return 1;
+        }
+    }
+#endif
+    return 0;
+}
 
 /* PyErrExceptionMatches */
 #if CYTHON_FAST_THREAD_STATE

@@ -15,11 +15,12 @@ cdef class PokerEvaluator:
 		'A': 14,
 		**{str(n): n for n in range(2, 11)}
 	}
-	cdef set _table, _hand, deck
+	cdef set deck
+	cdef tuple _hand, _table
 
 	def __init__(self):
-		self._table = set()
-		self._hand = set()
+		self._table = tuple()
+		self._hand = tuple()
 		self.deck = set()
 
 		self.reset_deck()
@@ -37,19 +38,19 @@ cdef class PokerEvaluator:
 	def set_table_as(self, table):
 		"""resets table of community cards to given set of cards"""
 		table = set(PokerEvaluator._normalize_card(card) for card in table)
-		self._table = table
+		self._table = tuple(table)
 		self.deck -= table
 
 	def update_table(self, card):
 		"""adds normalised card to a table of community cards"""
 		card = PokerEvaluator._normalize_card(card)
-		self._table.update(card)
+		self._table + card
 		self.deck -= card
 
 	def update_hand(self, players_hand):
 		"""normalises cards and sets them as current cards of a player"""
 		players_hand = set(PokerEvaluator._normalize_card(card) for card in players_hand)
-		self._hand = players_hand
+		self._hand = tuple(players_hand)
 		self.deck -= players_hand
 
 	cdef int positions_to_calculate(self):
@@ -76,20 +77,20 @@ cdef class PokerEvaluator:
 
 		cdef int win = 0
 		cdef int our_cards_value, enemy_cards_value
-		cdef set full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
+		cdef tuple full_table, rest_of_deck, our_seven_cards, enemy_seven_cards
 
 		for table_addition in combinations(self.deck, 5-len(self._table)):
-			full_table = self._table.union(table_addition)
-			rest_of_deck = self.deck - set(table_addition)
+			full_table = self._table + table_addition
+			rest_of_deck = tuple(self.deck - set(table_addition))
 
-			our_seven_cards = full_table.union(self._hand)
+			our_seven_cards = full_table + self._hand
 
-			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(our_seven_cards))
+			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(our_seven_cards)
 
 			for enemy_cards in combinations(rest_of_deck, 2):
 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
-				enemy_seven_cards = full_table.union(enemy_cards)
-				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(enemy_seven_cards))
+				enemy_seven_cards = full_table + enemy_cards
+				enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(enemy_seven_cards)
 				win += (our_cards_value >= enemy_cards_value)
 
 		return round(win * 100 / self.positions_to_calculate(), 2)
@@ -113,15 +114,14 @@ cdef class PokerEvaluator:
 		cdef int high_card = numbers[-1]
 
 		# init helper variables
-		cdef int pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush
-		pair = 1
-		two_pair = 2
-		three_of_a_kind = 3
-		straight = 4
-		flush = 5
-		full_house = 6
-		four_of_a_kind = 7
-		straight_flush = 8
+		cdef int pair = 1
+		cdef int two_pair = 2
+		cdef int three_of_a_kind = 3
+		cdef int straight = 4
+		cdef int flush = 5
+		cdef int full_house = 6
+		cdef int four_of_a_kind = 7
+		cdef int straight_flush = 8
 		hand_types_on_table = [False for _ in range(9)]
 		hand_types_on_table[0] = True
 		value_of_type = [0 for _ in range(9)]
