@@ -6,6 +6,20 @@ from itertools import combinations
 # diamonds (♦), clubs (♣), hearts (♥) and spades (♠)
 
 
+def memo(f):
+	memo_table = {}
+
+	def wrapper(arg):
+		if arg in memo_table:
+			return memo_table[arg]
+		else:
+			val = f(arg)
+			memo_table[arg] = val
+			return val
+
+	return wrapper
+
+
 class PokerEvaluator:
 	SUITES = ('d', 'c', 'h', 's')
 	CARD_VALUES = {
@@ -76,7 +90,7 @@ class PokerEvaluator:
 
 		def value_of_enemy_cards_is_smaller(cards7_enemy, our_cards_value):
 			"""this function should be run in parallel but I just can't find a way to do that yet - please help"""
-			enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(tuple(cards7_enemy))
+			enemy_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(cards7_enemy)
 			return our_cards_value >= enemy_cards_value
 
 		win = 0
@@ -85,18 +99,19 @@ class PokerEvaluator:
 			full_table = self._table + table_addition
 			rest_of_deck = tuple(self.deck - set(table_addition))
 
-			our_seven_cards = full_table + self._hand
+			our_seven_cards = tuple(sorted(full_table + self._hand))
 
 			our_cards_value = PokerEvaluator.value_of_best_hand_type_from_seven_cards(our_seven_cards)
 
 			for enemy_cards in combinations(rest_of_deck, 2):
 				# here the code could be set to run on multiple cores to calculate values for different enemy cards
-				enemy_seven_cards = full_table + enemy_cards
+				enemy_seven_cards = tuple(sorted(full_table + enemy_cards))
 				win += value_of_enemy_cards_is_smaller(enemy_seven_cards, our_cards_value)
 
 		return round(win * 100 / self.positions_to_calculate, 2)
 
 	@staticmethod
+	@memo
 	def value_of_best_hand_type_from_seven_cards(cards7):
 		"""
 		finds best hand type in a set of seven cards player can have - two from player ows and five community cards
@@ -196,8 +211,8 @@ class PokerEvaluator:
 		for color in set_of_colors:
 			count = colors.count(color)
 			if count >= 5:
-				nums = (num for num, col in cards7 if col == color)
-				max_of_nums = max(nums)
+				nums = (num for num, col in cards7[::-1] if col == color)
+				max_of_nums = next(nums)
 				return max_of_nums
 
 	@staticmethod
