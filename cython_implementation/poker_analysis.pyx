@@ -6,18 +6,13 @@ from itertools import combinations
 # diamonds (♦), clubs (♣), hearts (♥) and spades (♠)
 
 
-memo_table = {}
+cdef dict memo_table = {}
 
 
 cdef class PokerEvaluator:
 	SUITES = ('d', 'c', 'h', 's')
-	CARD_VALUES = {
-		'J': 11,
-		'D': 12,
-		'K': 13,
-		'A': 14,
-		**{str(n): n for n in range(2, 11)}
-	}
+	CARD_VALUES = {'J': 11, 'D': 12, 'K': 13, 'A': 14, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10}
+
 	cdef set deck
 	cdef tuple _hand, _table
 
