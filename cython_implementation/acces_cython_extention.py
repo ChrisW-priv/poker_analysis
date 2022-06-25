@@ -1,14 +1,12 @@
-from poker_analysis import PokerEvaluator
+from poker_analysis import calculate_position, set_table_as, update_hand
 
 
 if __name__ == '__main__':
     from cProfile import run
-    hand = (('A', 'h'), ('A', 's'))
-    base = (('3', 'h'), ('3', 's'), ('A', 'c'))
+    hand = {('A', 'h'), ('A', 's')}
+    base = {('3', 'h'), ('3', 's'), ('A', 'c')}
 
-    evaluator = PokerEvaluator()
-    evaluator.set_table_as(base)
-    evaluator.update_hand(hand)
-    result = evaluator.calculate_position
-    # print(result())
+    set_table_as(base)
+    update_hand(hand)
+    result = calculate_position
     run('result()', sort='cumtime')
