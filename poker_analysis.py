@@ -118,31 +118,21 @@ def calculate_position():
 def there_is_con_len5_in_cards7(card_numbers):
 	for i in range(3):
 		cards5 = card_numbers[2 - i: 7 - i]
-		f_of_l = cards5[0]
-		consecutive_len5 = list(range(f_of_l, f_of_l + 5))
-		if cards5 == consecutive_len5:
-			return consecutive_len5
+		first_of_selection = cards5[0]
+		if cards5 == list(range(first_of_selection, first_of_selection + 5)):
+			return first_of_selection, i
+	return 0, 0
 
 
 def check_if_same_suite_in_cards(cards7):
-	colors = [col for _, col in cards7]
-	set_of_colors = set(colors)
-	for color in set_of_colors:
+	colors = tuple(col for _, col in cards7)
+	for color in SUITES:
 		count = colors.count(color)
 		if count >= 5:
-			nums = (num for num, col in cards7[::-1] if col == color)
-			max_of_nums = next(nums)
-			return max_of_nums
-
-
-def check_if_same_suite_in_cards_with_numbers(cards7, nums):
-	set_of_nums = set(nums)
-	colors = [col for num, col in cards7 if num in set_of_nums]
-	set_of_cols = set(colors)
-	for col in set_of_cols:
-		count = colors.count(col)
-		if count >= 5:
-			return True
+			for num, col in cards7[::-1]:
+				if col == color:
+					return num
+	return 0
 
 
 @memo
@@ -151,7 +141,7 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 	finds best hand type in a set of seven cards player can have - two from player ows and five community cards
 	returns integer value to best type of hand found
 	"""
-	l_of_nums = [num for num, _ in cards7]
+	l_of_nums = tuple(num for num, _ in cards7)
 
 	set_of_nums = set(l_of_nums)
 
@@ -163,9 +153,9 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 
 	# init helper variables
 	pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush = range(1, 9)
-	hand_types_on_table = [False] * 9
+	hand_types_on_table = [False] * 8
 	hand_types_on_table[0] = True
-	value_of_type = [0] * 9
+	value_of_type = [0] * 8
 
 	def update_hand_type_on_table(hand_type_index, value_of_hand_type):
 		nonlocal hand_types_on_table, value_of_type
@@ -173,18 +163,14 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 		value_of_type[hand_type_index] = value_of_hand_type
 
 	# check if straight_flush or straight
-	consecutive_5_cards_in_cards7 = there_is_con_len5_in_cards7(l_of_nums)
-	if consecutive_5_cards_in_cards7:
-		max_of_con5 = consecutive_5_cards_in_cards7[-1]
-		if check_if_same_suite_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
+	card_starting_con5, index_start = there_is_con_len5_in_cards7(l_of_nums)
+	if card_starting_con5 != 0:
+		max_of_con5 = card_starting_con5 + 4
+		# check if all have same color
+		if all(cards7[2-index_start][1] == col for num, col in cards7[2 - index_start: 7 - index_start]):
 			return straight_flush * 10000 + max_of_con5 * 100
 		else:
 			update_hand_type_on_table(straight, max_of_con5)
-
-	# check for flush
-	color_on_table = check_if_same_suite_in_cards(cards7)
-	if color_on_table:
-		update_hand_type_on_table(flush, color_on_table)
 
 	# check for pair, two-pais, full_house, three_of_a_kind etc.
 	for number in l_of_nums:
@@ -221,8 +207,13 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 			else:
 				update_hand_type_on_table(pair, number)
 
-	for i in range(9):
-		current_index = 8-i
+	# check for flush
+	highest_card_in_flush = check_if_same_suite_in_cards(cards7)
+	if highest_card_in_flush != 0:
+		update_hand_type_on_table(flush, highest_card_in_flush)
+
+	for i in range(8):
+		current_index = 7-i
 		if hand_types_on_table[current_index]:
 			count_highest_card = current_index not in {straight, flush, full_house, straight_flush}
 			return 10000 * current_index + 100 * value_of_type[current_index] + high_card * count_highest_card
