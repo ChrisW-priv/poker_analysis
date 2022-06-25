@@ -143,11 +143,9 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 	"""
 	l_of_nums = tuple(num for num, _ in cards7)
 
-	set_of_nums = set(l_of_nums)
-
 	# if there is an ase we want to include its both forms as int: 1 and 14
-	if 14 in set_of_nums:
-		set_of_nums.add(1)
+	if 14 in l_of_nums[::-1]:
+		l_of_nums = (0,) + l_of_nums
 
 	high_card = l_of_nums[-1]
 
