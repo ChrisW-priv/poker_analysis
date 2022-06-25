@@ -90,14 +90,14 @@ def positions_to_calculate():
 	return multiplier//denominator
 
 
+def value_of_enemy_cards_is_smaller(full_table, enemy_cards, our_cards_value):
+	cards7_enemy = tuple(sorted(full_table + enemy_cards))
+	enemy_cards_value = value_of_best_hand_type_from_seven_cards(cards7_enemy)
+	return our_cards_value >= enemy_cards_value
+
+
 def calculate_position():
 	"""calculates percentage of how many times we win or make a draw compered to all position that we consider"""
-
-	def value_of_enemy_cards_is_smaller(cards7_enemy, our_cards_value):
-		"""this function should be run in parallel but I just can't find a way to do that yet - please help"""
-		enemy_cards_value = value_of_best_hand_type_from_seven_cards(cards7_enemy)
-		return our_cards_value >= enemy_cards_value
-
 	win = 0
 
 	for table_addition in combinations(deck, 5-len(_table)):
@@ -110,17 +110,14 @@ def calculate_position():
 
 		for enemy_cards in combinations(rest_of_deck, 2):
 			# here the code could be set to run on multiple cores to calculate values for different enemy cards
-			enemy_seven_cards = tuple(sorted(full_table + enemy_cards))
-			win += value_of_enemy_cards_is_smaller(enemy_seven_cards, our_cards_value)
+			win += value_of_enemy_cards_is_smaller(full_table, enemy_cards, our_cards_value)
 
 	return round(win * 100 / positions_to_calculate(), 2)
 
 
 def there_is_con_len5_in_cards7(card_numbers):
-	len_cards = len(card_numbers)
-	len_loop = len_cards - 5
-	for i in range(len_loop + 1):
-		cards5 = card_numbers[len_loop - i: len_cards - i]
+	for i in range(3):
+		cards5 = card_numbers[2 - i: 7 - i]
 		f_of_l = cards5[0]
 		consecutive_len5 = list(range(f_of_l, f_of_l + 5))
 		if cards5 == consecutive_len5:
@@ -155,14 +152,14 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 	returns integer value to best type of hand found
 	"""
 	l_of_nums = [num for num, _ in cards7]
+
 	set_of_nums = set(l_of_nums)
 
 	# if there is an ase we want to include its both forms as int: 1 and 14
 	if 14 in set_of_nums:
 		set_of_nums.add(1)
 
-	numbers = sorted(set_of_nums)
-	high_card = numbers[-1]
+	high_card = l_of_nums[-1]
 
 	# init helper variables
 	pair, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush = range(1, 9)
@@ -176,7 +173,7 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 		value_of_type[hand_type_index] = value_of_hand_type
 
 	# check if straight_flush or straight
-	consecutive_5_cards_in_cards7 = there_is_con_len5_in_cards7(numbers)
+	consecutive_5_cards_in_cards7 = there_is_con_len5_in_cards7(l_of_nums)
 	if consecutive_5_cards_in_cards7:
 		max_of_con5 = consecutive_5_cards_in_cards7[-1]
 		if check_if_same_suite_in_cards_with_numbers(cards7, consecutive_5_cards_in_cards7):
@@ -190,7 +187,7 @@ def value_of_best_hand_type_from_seven_cards(cards7):
 		update_hand_type_on_table(flush, color_on_table)
 
 	# check for pair, two-pais, full_house, three_of_a_kind etc.
-	for number in numbers:
+	for number in l_of_nums:
 		count = l_of_nums.count(number)
 
 		if count == 4:
