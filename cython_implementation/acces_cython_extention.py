@@ -9,4 +9,5 @@ if __name__ == '__main__':
     set_table_as(base)
     update_hand(hand)
     result = calculate_position
+    # print(result())
     run('result()', sort='cumtime')

@@ -6,22 +6,11 @@ from itertools import combinations
 # diamonds (♦), clubs (♣), hearts (♥) and spades (♠)
 
 
-def memo(f):
-	memo_table = {}
-
-	def wrapper(arg):
-		if arg in memo_table:
-			return memo_table[arg]
-		else:
-			val = f(arg)
-			memo_table[arg] = val
-			return val
-
-	return wrapper
+cdef dict memo_table = {}
 
 
-SUITES = ('d', 'c', 'h', 's')
-CARD_VALUES = {
+cdef tuple SUITES = ('d', 'c', 'h', 's')
+cdef dict CARD_VALUES = {
 	'J': 11,
 	'D': 12,
 	'K': 13,
@@ -41,9 +30,9 @@ def _normalize_card(card):
 	return number, color
 
 
-_table = tuple()
-_hand = tuple()
-deck = reset_deck()
+cdef tuple _table = tuple()
+cdef tuple _hand = tuple()
+cdef set deck = reset_deck()
 
 
 def set_table_as(table: set):
@@ -90,9 +79,11 @@ cdef int positions_to_calculate():
 	return multiplier//denominator
 
 
-cpdef int calculate_position():
+cpdef double calculate_position():
 	"""calculates percentage of how many times we win or make a draw compered to all position that we consider"""
-	win = 0
+	cdef int win = 0
+	cdef tuple full_table, rest_of_deck, card7_enemy, our_seven_cards
+	cdef int our_cards_value, enemy_cadrs_value
 
 	for table_addition in combinations(deck, 5-len(_table)):
 		full_table = _table + table_addition
@@ -100,17 +91,18 @@ cpdef int calculate_position():
 
 		our_seven_cards = tuple(sorted(full_table + _hand))
 
-		our_cards_value = value_of_best_hand_type_from_seven_cards(our_seven_cards)
+		our_cards_value = memoized_value_of_best_hand_type_from_seven_cards(our_seven_cards)
 
 		for enemy_cards in combinations(rest_of_deck, 2):
 			cards7_enemy = tuple(sorted(full_table + enemy_cards))
-			enemy_cards_value = value_of_best_hand_type_from_seven_cards(cards7_enemy)
+			enemy_cards_value = memoized_value_of_best_hand_type_from_seven_cards(cards7_enemy)
 			win += our_cards_value >= enemy_cards_value
 
 	return round(win * 100 / positions_to_calculate(), 2)
 
 
-cdef tuple there_is_con_len5_in_cards7(card_numbers):
+cdef tuple there_is_con_len5_in_cards7(tuple card_numbers):
+	cdef tuple cards5
 	for i in range(3):
 		cards5 = card_numbers[2 - i: 7 - i]
 		first_of_selection = cards5[0]
@@ -119,8 +111,9 @@ cdef tuple there_is_con_len5_in_cards7(card_numbers):
 	return 0, 0
 
 
-cdef int check_if_same_suite_in_cards(cards7):
-	colors = tuple(col for _, col in cards7)
+cdef int check_if_same_suite_in_cards(tuple cards7):
+	cdef tuple colors = tuple(col for _, col in cards7)
+	cdef int count
 	for color in SUITES:
 		count = colors.count(color)
 		if count >= 5:
@@ -130,8 +123,16 @@ cdef int check_if_same_suite_in_cards(cards7):
 	return 0
 
 
-@memo
-def value_of_best_hand_type_from_seven_cards(cards7):
+cdef int memoized_value_of_best_hand_type_from_seven_cards(tuple cards7):
+	if cards7 in memo_table:
+		return memo_table[cards7]
+
+	cdef int val = value_of_best_hand_type_from_seven_cards(cards7)
+	memo_table[cards7] = val
+	return val
+
+
+cdef int value_of_best_hand_type_from_seven_cards(tuple cards7):
 	"""
 	finds best hand type in a set of seven cards player can have - two from player ows and five community cards
 	returns integer value to best type of hand found
