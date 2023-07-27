@@ -1,6 +1,7 @@
 from enum import Enum
 import numpy as np
 from functools import reduce
+from dataclasses import dataclass
 
 # 2,3,4,5,...9,t,j,k,a
 RANKS = tuple(str(x) for x in range(2,9+1)) + ('t', 'j', 'q', 'k', 'a')
@@ -15,9 +16,12 @@ def encode_card(card:str) -> np.ndarray:
     suite_encoded = SUITES.index(suite)
     return np.array([rank_encoded, suite_encoded])
 
+
 def construct_deck():
     return set(encode_card(rank+suite) for rank in RANKS for suite in SUITES)
 
+
+@dataclass(order=True)
 class PokerHands(Enum):
     HighCard = 1
     Pair = 2
@@ -28,6 +32,11 @@ class PokerHands(Enum):
     FullHouse = 7
     FourOfAKind = 8
     StraightFlush = 9
+
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value == other.value
+        return NotImplemented
 
 
 def calculate_position(community_cards:list[str],
@@ -46,29 +55,42 @@ def calculate_position(community_cards:list[str],
     arr_whole_cards = np.array(whole_cards)
 
     current_hand = arr_community_cards + arr_whole_cards
-
-    # Sort the array based on the first value in each pair
-    sorted_indices = np.argsort(current_hand[:, 0])
-    sorted_cards = current_hand[sorted_indices]   
+    sorted_cards = sort_numpy_array(current_hand)
 
     result = eval7cards(sorted_cards)
 
 
+def sort_numpy_array(array: np.ndarray) -> np.ndarray:
+    # Sort the array based on the first value in each pair
+    sorted_indices = np.argsort(array[:, 0])
+    return array[sorted_indices]   
+
+def handle_same_kind(state, zero_count):
+    if zero_count+1 == 4: state = PokerHands.FourOfAKind
+    if state == PokerHands.HighCard:
+        if zero_count+1 == 2: state = PokerHands.Pair
+        if zero_count+1 == 3: state = PokerHands.ThreeOfAKind
+    if state == PokerHands.Pair:
+        if zero_count+1 == 2: state = PokerHands.TwoPair
+        if zero_count+1 == 3: state = PokerHands.FullHouse
+    if state == PokerHands.ThreeOfAKind:
+        if zero_count+1 == 2: state = PokerHands.FullHouse
+        if zero_count+1 == 3: state = PokerHands.FullHouse
+
+    return state
+
+
 def reduce_the_same_kind(acc, val):
-    state, last, count = acc
-    if val == last: return state, val, count + 1
-    if last == 0:
-        if count+1 == 4: return PokerHands.FourOfAKind, val, 1
-        if state == PokerHands.HighCard:
-            if count+1 == 2: return PokerHands.Pair, val, 1
-            if count+1 == 3: return PokerHands.ThreeOfAKind, val, 1
-        if state == PokerHands.Pair:
-            if count+1 == 2: return PokerHands.TwoPair, val, 1
-            if count+1 == 3: return PokerHands.FullHouse, val, 1
-        if state == PokerHands.ThreeOfAKind:
-            if count+1 == 2: return PokerHands.FullHouse, val, 1
-            if count+1 == 3: return PokerHands.FullHouse, val, 1
-    return state, val, 1
+    best_hand, count_con_zero, count_con_one = acc
+    if val == 0: return best_hand, count_con_zero+1, count_con_one
+    if val == 1:
+        count_con_one += 1
+        if count_con_one+1 == 5: return PokerHands.Straight, count_con_zero, count_con_one+1
+        state = handle_same_kind(best_hand, count_con_zero)
+        return state, 0, count_con_one
+    # if it is not 0 or 1
+    state = handle_same_kind(best_hand, count_con_zero)
+    return state, 0, 0
 
 
 def eval7cards(sorted_cards:np.ndarray):
@@ -79,7 +101,13 @@ def eval7cards(sorted_cards:np.ndarray):
     flush_present = np.any(suite_counts >= 5)
 
     result = reduce(reduce_the_same_kind,
-                    consecutive_ranks_diff[1:], 
-                    (PokerHands.HighCard, consecutive_ranks_diff[0], 1))
+                    consecutive_ranks_diff[1:], (
+                        PokerHands.HighCard,                # state
+                        consecutive_ranks_diff[0] == 0,     # count of zeros
+                        consecutive_ranks_diff[0] == 1)     # count of ones
+                    )
 
+    state:PokerHands = result[0]
+    if flush_present and state < PokerHands.Flush: state = PokerHands.Flush
+    return state
 
