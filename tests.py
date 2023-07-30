@@ -43,6 +43,9 @@ class TestEngine(unittest.TestCase):
         cases=( 
 (['2d', '2s', '4s', '2h', '2c', '3h', '4s'], ['2d', '2s', '4d', '4h', '4c', '3h', '4s']),
 (['2c', '3c', '4h', '6h', '7s', '8s', 'ts'], ['2c', '3c', '4h', '6h', '7s', '8s', 'as']),
+(['2c', '3c', '4h', '6h', '7s', '8s', 'ts'], ['2c', '3c', '4h', '6h', '7s', '9s', 'ts']),
+(['2c', '3c', '4h', '6h', '7s', '9s', 'ts'], ['2c', '3c', '4h', '6h', '8s', '9s', 'ts']),
+(['2c', '3c', '4h', '6h', '7s', '8s', 'ts'], ['2c', '3c', '5h', '6h', '7s', '8s', 'ts']),
 (['2c', '3c', '4h', '6h', '7s', 'ts', 'th'], ['2c', '3c', '4h', '6h', '7s', 'as', 'ah']),
 (['2c', '2h', '4h', '6h', '7s', '8s', 'th'], ['2c', '2h', '4h', '6h', '7s', '8s', 'ah']),
 (['2c', '2h', '4h', '6h', '7s', '8s', 'ah'], ['2c', '2h', '4h', '6h', '7s', 'ts', 'ah']),
@@ -66,9 +69,11 @@ class TestEngine(unittest.TestCase):
             with self.subTest(f"Test case {idx}: {cases[idx-1]}"):
                 smaller_hand = prep_cards(smaller)
                 greater_hand = prep_cards(greater)
-                interpreted_value_smaller = poker_engine.eval7cards(smaller_hand)[1]
-                interpreted_value_greater = poker_engine.eval7cards(greater_hand)[1]
-                self.assertLess(interpreted_value_smaller, interpreted_value_greater)
+                interpreted_value_smaller = poker_engine.eval7cards(smaller_hand)
+                interpreted_value_greater = poker_engine.eval7cards(greater_hand)
+                smaller_hand_strength = poker_engine.strength_of_hand(interpreted_value_smaller)
+                greater_hand_strength = poker_engine.strength_of_hand(interpreted_value_greater)
+                self.assertLess(smaller_hand_strength, greater_hand_strength)
 
     def test_calculate_position(self):
         community = ['8d', '9d', 'td', 'jd', 'qd']

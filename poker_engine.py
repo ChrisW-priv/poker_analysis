@@ -11,7 +11,7 @@ ACE_ENCODED_ONE = -1
 # clubs (♣), diamonds (♦), hearts (♥) and spades (♠)
 SUITES = ('c', 'd', 'h', 's')
 SUITES_ENCODED = range(len(SUITES))
-EVALUATION_TABLE_EXPONENTS = tuple(15**i for i in range(5))
+EVALUATION_TABLE_EXPONENTS = tuple(15**i for i in range(6))
 
 
 def encode_card(card:str) -> tuple[int, int]:
@@ -150,6 +150,14 @@ def interpret_sequence(consevutive_ranks_diff: np.ndarray) -> PokerHand:
     return result[0]
 
 
+def eval_high_card(ranks):
+    kickers = ranks[-5:]
+    eval = 0
+    for i in range(1, 5+1):
+        eval += kickers[-i] * EVALUATION_TABLE_EXPONENTS[-i - 1]
+    return eval
+
+
 def eval_pair(ranks, consecutive_ranks_diff) -> int:
     zero_mask = consecutive_ranks_diff == 0
     zero_indexes = np.where(zero_mask)[0]
@@ -257,8 +265,6 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
     if ranks[-1] == ACE_ENCODED_LAST:
         ranks = np.insert(ranks, 0, ACE_ENCODED_ONE) # insert ace encoded as 1 at the beggining
 
-
-    # see if there is a flush
     suites = sorted_cards[:,1]
     suite_counts = np.array([(suites == value).sum() for value in range(4)])
     flush_suite = np.argmax(suite_counts >= 5)
@@ -270,10 +276,9 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
 
     consecutive_ranks_diff = np.diff(ranks, append=127)
     state_interpreted = interpret_sequence(consecutive_ranks_diff)
-    high_card = ranks[-1]
 
     if state_interpreted is PokerHand.HighCard:
-        return PokerHand.HighCard, high_card
+        return PokerHand.HighCard, eval_high_card(ranks)
     if state_interpreted is PokerHand.Pair:
         return PokerHand.Pair, eval_pair(ranks, consecutive_ranks_diff)
     if state_interpreted is PokerHand.ThreeOfAKind:
