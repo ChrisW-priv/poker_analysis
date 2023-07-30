@@ -1,4 +1,3 @@
-from enum import Enum
 import numpy as np
 from functools import reduce
 from itertools import combinations
@@ -34,7 +33,7 @@ def construct_deck() -> set:
     return set(encode_card(rank+suite) for rank in RANKS for suite in SUITES)
 
 
-class PokerHand(int, Enum):
+class PokerHand(int):
     ERROR = -1
     HighCard = 1
     Pair = 2
@@ -99,9 +98,9 @@ def calculate_position(community_cards:list[str],
                 pass
                 # # here we could add information on what specific hands beat us
                 # # for now we have a comment with print of what beats us
-                print("enemy cards:", tuple(map(decode_card, enemy_cards)), 
-                      "enemy eval:", enemy_cards_eval, 
-                      "our eval:", our_cards_eval)
+                # print("enemy cards:", tuple(map(decode_card, enemy_cards)), 
+                #       "enemy eval:", enemy_cards_eval, 
+                #       "our eval:", our_cards_eval)
             total += 1
 
     return round(win * 100 / total, 2)
@@ -115,12 +114,12 @@ def sort_numpy_array(array: np.ndarray) -> np.ndarray:
 
 def handle_same_kind(state, zero_count):
     if zero_count+1 == 2:
-        if state is PokerHand.HighCard: return PokerHand.Pair
-        if state is PokerHand.Pair: return PokerHand.TwoPair
-        if state is PokerHand.ThreeOfAKind: return PokerHand.FullHouse
+        if state == PokerHand.HighCard: return PokerHand.Pair
+        if state == PokerHand.Pair: return PokerHand.TwoPair
+        if state == PokerHand.ThreeOfAKind: return PokerHand.FullHouse
     if zero_count+1 == 3:
-        if state is PokerHand.HighCard: return PokerHand.ThreeOfAKind
-        if state is PokerHand.Pair or state is PokerHand.ThreeOfAKind:
+        if state == PokerHand.HighCard: return PokerHand.ThreeOfAKind
+        if state == PokerHand.Pair or state == PokerHand.ThreeOfAKind:
             return PokerHand.FullHouse
     if zero_count+1 == 4: return PokerHand.FourOfAKind
     return state
@@ -252,7 +251,7 @@ def eval_flush(ranks, suites, flush_suite) -> tuple[PokerHand, int]:
     ranks_in_flush = ranks[flush_mask]
     flush_rank_diff = np.diff(ranks_in_flush, append=127)
     interpret = interpret_sequence(flush_rank_diff)
-    if interpret is PokerHand.Straight:
+    if interpret == PokerHand.Straight:
         one_mask = np.where(flush_rank_diff==1)[0]
         index_of_highest_rank = one_mask[-1]+1
         highest_rank = ranks_in_flush[index_of_highest_rank]
@@ -266,30 +265,33 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
         ranks = np.insert(ranks, 0, ACE_ENCODED_ONE) # insert ace encoded as 1 at the beggining
 
     suites = sorted_cards[:,1]
-    suite_counts = np.array([(suites == value).sum() for value in range(4)])
-    flush_suite = np.argmax(suite_counts >= 5)
+    suites_returned, suite_counts = np.unique(suites, return_counts=True)
+    flush_suite = -1
+    for i in range(len(suite_counts)):
+        if suite_counts[i] >= 5:
+            flush_suite = suites_returned[i]
 
-    # here we check for the value again because if flush is not found the
+    # here we check for the value again because if flush == not found the
     # default value of flush_suite will be 0 (numpy default we cant change)
-    if suite_counts[flush_suite] >= 5:
+    if flush_suite != -1:
         return eval_flush(ranks, suites, flush_suite)
 
     consecutive_ranks_diff = np.diff(ranks, append=127)
     state_interpreted = interpret_sequence(consecutive_ranks_diff)
 
-    if state_interpreted is PokerHand.HighCard:
+    if state_interpreted == PokerHand.HighCard:
         return PokerHand.HighCard, eval_high_card(ranks)
-    if state_interpreted is PokerHand.Pair:
+    if state_interpreted == PokerHand.Pair:
         return PokerHand.Pair, eval_pair(ranks, consecutive_ranks_diff)
-    if state_interpreted is PokerHand.ThreeOfAKind:
+    if state_interpreted == PokerHand.ThreeOfAKind:
         return PokerHand.ThreeOfAKind, eval_three_of_a_kind(ranks, consecutive_ranks_diff)
-    if state_interpreted is PokerHand.TwoPair:
+    if state_interpreted == PokerHand.TwoPair:
         return PokerHand.TwoPair, eval_two_pair(ranks, consecutive_ranks_diff)
-    if state_interpreted is PokerHand.Straight:
+    if state_interpreted == PokerHand.Straight:
         return PokerHand.Straight, eval_straight(ranks, consecutive_ranks_diff)
-    if state_interpreted is PokerHand.FullHouse:
+    if state_interpreted == PokerHand.FullHouse:
         return PokerHand.FullHouse, eval_fullhouse(ranks, consecutive_ranks_diff)
-    if state_interpreted is PokerHand.FourOfAKind:
+    if state_interpreted == PokerHand.FourOfAKind:
         return PokerHand.FourOfAKind, eval_four_of_a_kind(ranks, consecutive_ranks_diff)
     return PokerHand.ERROR, -1
 
