@@ -257,19 +257,18 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
     if ranks[-1] == ACE_ENCODED_LAST:
         ranks = np.insert(ranks, 0, ACE_ENCODED_ONE) # insert ace encoded as 1 at the beggining
 
-    consecutive_ranks_diff = np.diff(ranks, append=127)
 
     # see if there is a flush
     suites = sorted_cards[:,1]
     suite_counts = np.array([(suites == value).sum() for value in range(4)])
-    suite_count_mask = np.where(suite_counts >= 5)[0]
-    flush_suite = -1
-    if suite_count_mask.size != 0:
-        flush_suite = suite_count_mask[0]
+    flush_suite = np.argmax(suite_counts >= 5)
 
-    if flush_suite != -1:
+    # here we check for the value again because if flush is not found the
+    # default value of flush_suite will be 0 (numpy default we cant change)
+    if suite_counts[flush_suite] >= 5:
         return eval_flush(ranks, suites, flush_suite)
 
+    consecutive_ranks_diff = np.diff(ranks, append=127)
     state_interpreted = interpret_sequence(consecutive_ranks_diff)
     high_card = ranks[-1]
 
