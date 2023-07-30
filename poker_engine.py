@@ -190,9 +190,12 @@ def eval_two_pair(ranks, consecutive_ranks_diff) -> int:
     
 
 def eval_straight(ranks, consecutive_ranks_diff) -> int:
-    cumulative = np.cumsum(consecutive_ranks_diff)
-    index_of_termination = np.argmax(consecutive_ranks_diff == first_to_terminate_sequence)
-    highest_rank = ranks[index_of_termination - 1]
+    not_zero = consecutive_ranks_diff != 0
+    not_one = consecutive_ranks_diff != 1
+    mask_not_0or1 = np.logical_and(not_zero, not_one)
+
+    index_of_termination = np.argmax(mask_not_0or1)
+    highest_rank = ranks[index_of_termination]
     return highest_rank
 
 
