@@ -99,9 +99,9 @@ def calculate_position(community_cards:list[str],
                 pass
                 # # here we could add information on what specific hands beat us
                 # # for now we have a comment with print of what beats us
-                # print("enemy cards:", tuple(map(decode_card, enemy_cards)), 
-                #       "enemy eval:", enemy_cards_eval, 
-                #       "our eval:", our_cards_eval)
+                print("enemy cards:", tuple(map(decode_card, enemy_cards)), 
+                      "enemy eval:", enemy_cards_eval, 
+                      "our eval:", our_cards_eval)
             total += 1
 
     return round(win * 100 / total, 2)
@@ -239,15 +239,15 @@ def eval_four_of_a_kind(ranks, consecutive_ranks_diff) -> int:
     return four
 
 
-def eval_flush(ranks, consecutive_ranks_diff, suites, flush_suite) -> tuple[PokerHand, int]:
+def eval_flush(ranks, suites, flush_suite) -> tuple[PokerHand, int]:
     flush_mask = np.where(suites == flush_suite)[0]
     ranks_in_flush = ranks[flush_mask]
     flush_rank_diff = np.diff(ranks_in_flush, append=127)
     interpret = interpret_sequence(flush_rank_diff)
     if interpret is PokerHand.Straight:
-        one_mask = np.where(consecutive_ranks_diff==1)[0]
+        one_mask = np.where(flush_rank_diff==1)[0]
         index_of_highest_rank = one_mask[-1]+1
-        highest_rank = ranks[index_of_highest_rank]
+        highest_rank = ranks_in_flush[index_of_highest_rank]
         return PokerHand.StraightFlush, highest_rank
     return PokerHand.Flush, ranks_in_flush[-1]
 
@@ -268,7 +268,7 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
         flush_suite = suite_count_mask[0]
 
     if flush_suite != -1:
-        return eval_flush(ranks, consecutive_ranks_diff, suites, flush_suite)
+        return eval_flush(ranks, suites, flush_suite)
 
     state_interpreted = interpret_sequence(consecutive_ranks_diff)
     high_card = ranks[-1]
@@ -292,5 +292,5 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
 
 def strength_of_hand(evaluation_of_7_cards):
     hand, eval = evaluation_of_7_cards
-    return 100_000_000 * hand + eval
+    return EVALUATION_TABLE_EXPONENTS[-1] * hand + eval
 

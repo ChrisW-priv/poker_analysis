@@ -59,6 +59,7 @@ class TestEngine(unittest.TestCase):
 (['as', '2c', '3s', '4s', '7d', '5c', '8c'], ['6s', '2c', '3s', '4s', '7d', '5c', '8c']),
 (['2d', '3d', '4d', '5d', '6d', 'ts', '8c'], ['2d', '3d', '4d', '5d', '6d', '7d', '8c']),
 (['2d', '3d', '4d', '5d', '8d', 'ad', '8c'], ['2d', '3d', '4d', '5d', '6d', 'ts', '8c']),
+(['2d', '3d', '4d', '5d', '6d', '7c', '8c'], ['2d', '3d', '4d', '5d', '6d', '7d', '8c']),
                )
 
         for idx, (smaller, greater) in enumerate(cases, 1):
