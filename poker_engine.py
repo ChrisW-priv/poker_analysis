@@ -1,3 +1,4 @@
+from math import comb
 import numpy as np
 from functools import reduce
 from itertools import combinations
@@ -29,6 +30,13 @@ def decode_card(card:tuple[int, int]) -> str:
     return str(rank_decoded) + str(suite_decoded)
 
 
+def encode_cards_to_numpy(cards) -> np.ndarray:
+    # converts list of tuples into map object of np.ndarrays
+    numpied = map(np.array, cards)
+    # converts map into actual array
+    return np.array(list(numpied))
+
+
 def construct_deck() -> set:
     return set(encode_card(rank+suite) for rank in RANKS for suite in SUITES)
 
@@ -46,21 +54,26 @@ class PokerHand(int):
     StraightFlush = 9
 
 
-def encode_cards_to_numpy(cards) -> np.ndarray:
-    # converts list of tuples into map object of np.ndarrays
-    numpied = map(np.array, cards)
-    # converts map into actual array
-    return np.array(list(numpied))
+def total_number_of_positions_to_calculate(len_of_deck, len_community):
+    positions_in_loop1 = comb(len_of_deck, 5-len_community)
+    positions_in_loop2 = comb(len_of_deck-2, 2)
+    return positions_in_loop1 * positions_in_loop2
 
 
 def calculate_position(community_cards:list[str],
                        whole_cards:list[str],
                        excluded_cards:list[str]):
+    # assert correct size
     assert(len(whole_cards) == 2)
     assert(len(community_cards) <= 5)
+    # assert no duplicates between any of 3 sets
     assert(all(card not in whole_cards for card in excluded_cards))
     assert(all(card not in community_cards for card in excluded_cards))
     assert(all(card not in community_cards for card in whole_cards))
+    # assert no duplicates in any of 3 sets
+    assert(len(set(community_cards)) == len(community_cards))
+    assert(len(set(whole_cards)) == len(whole_cards))
+    assert(len(set(excluded_cards)) == len(excluded_cards))
 
     arr_community_cards = encode_cards_to_numpy(map(encode_card, community_cards))
     arr_whole_cards = encode_cards_to_numpy(map(encode_card, whole_cards))
@@ -72,6 +85,8 @@ def calculate_position(community_cards:list[str],
     deck = deck - set_community_cards - set_whole_cards - set_excluded_cards
 
     win = 0
+    # total number of all positions is known before-hand 
+    # total = total_number_of_positions_to_calculate(len(deck), len(community_cards)) 
     total = 0
     for table_addition in combinations(deck, 5-len(community_cards)):
         rest_of_deck = tuple(deck - set(table_addition))
@@ -87,7 +102,6 @@ def calculate_position(community_cards:list[str],
         our_cards_value = strength_of_hand(our_cards_eval)
 
         for enemy_cards in combinations(rest_of_deck, 2):
-			# here the code could be set to run on multiple cores to calculate values for different enemy cards
             arr_enemy_cards = encode_cards_to_numpy(enemy_cards)
             enemy_seven_cards = np.concatenate((full_table, arr_enemy_cards))
             enemy_cards_eval = eval7cards(enemy_seven_cards)
@@ -102,6 +116,7 @@ def calculate_position(community_cards:list[str],
                 #       "enemy eval:", enemy_cards_eval, 
                 #       "our eval:", our_cards_eval)
             total += 1
+    print(total)
 
     return round(win * 100 / total, 2)
 

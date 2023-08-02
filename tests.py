@@ -79,7 +79,8 @@ class TestEngine(unittest.TestCase):
         community = ['8d', '9d', 'td', 'jd', 'qd']
         whole = ['ad', 'kd']
         result = poker_engine.calculate_position(community, whole, [])
-        self.assertEqual(result, 100, f"Expected: {eval}, Got: {result}")
+        self.assertEqual(result, 100, f"Expected: 100, Got: {result}")
+
 
 if __name__ == "__main__":
     unittest.main()
