@@ -280,11 +280,15 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
         ranks = np.insert(ranks, 0, ACE_ENCODED_ONE) # insert ace encoded as 1 at the beggining
 
     suites = sorted_cards[:,1]
-    suites_returned, suite_counts = np.unique(suites, return_counts=True)
+    suite_counts = np.zeros(4)
+    for i in range(len(suites)):
+        c = suites[i]
+        suite_counts[c] += 1
+
     flush_suite = -1
-    for i in range(len(suite_counts)):
+    for i in range(4):
         if suite_counts[i] >= 5:
-            flush_suite = suites_returned[i]
+            flush_suite = i
 
     # here we check for the value again because if flush == not found the
     # default value of flush_suite will be 0 (numpy default we cant change)
