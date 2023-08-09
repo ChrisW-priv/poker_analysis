@@ -140,27 +140,32 @@ def handle_same_kind(state, zero_count):
     return state
 
 
-def reduce_sequence(acc, val):
-    best_hand, count_con_zero, count_con_one, last = acc
-
-    if val == last: return best_hand, count_con_zero+1, count_con_one, val
-    best_hand = handle_same_kind(best_hand, count_con_zero)
-
-    if val == last+1: return best_hand, 0, count_con_one + 1, val
-
-    # if it is not 0 or 1 then we check if we found Straight 
-    if count_con_one+1 >= 5: return PokerHand.Straight, count_con_zero, count_con_one, val
-
-    return best_hand, 0, 0, val
-
-
 def interpret_sequence(ranks: np.ndarray) -> PokerHand:
-    result = reduce(reduce_sequence,
-                    ranks[1:], (
-                        PokerHand.HighCard,
-                        0, 0, ranks[0])
-                    )
-    return result[0]
+    best_hand = PokerHand.HighCard
+    count_con_zero = 0
+    count_con_one = 0
+    last = ranks[0]
+    for val in ranks[1:]:
+        if val == last: 
+            count_con_zero+=1
+            last = val
+            continue
+        best_hand = handle_same_kind(best_hand, count_con_zero)
+        count_con_zero = 0
+
+        if val == last+1: 
+            count_con_one += 1
+            last = val
+            continue
+
+        # if it is not 0 or 1 then we check if we found Straight 
+        if count_con_one+1 >= 5:
+            best_hand = PokerHand.Straight
+
+        count_con_one = 0
+        last = val 
+
+    return best_hand
 
 
 def eval_high_card(ranks):
