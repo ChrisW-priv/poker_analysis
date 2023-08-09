@@ -1,31 +1,34 @@
 from math import comb
 import numpy as np
-from functools import reduce
 from itertools import combinations
-from enum import Enum
+from bisect import bisect_left
 
 # 2,3,4,5,...9,t,j,k,a
 RANKS = tuple(str(x) for x in range(2,9+1)) + ('t', 'j', 'q', 'k', 'a')
-RANKS_ENCODED = range(len(RANKS))
+shift = 2
+RANKS_ENCODED = tuple(range(shift, len(RANKS)+shift))
 ACE_ENCODED_LAST = RANKS_ENCODED[-1]
-ACE_ENCODED_ONE = -1
+ACE_ENCODED_ONE = 1
 # clubs (♣), diamonds (♦), hearts (♥) and spades (♠)
 SUITES = ('c', 'd', 'h', 's')
-SUITES_ENCODED = range(len(SUITES))
-EVALUATION_TABLE_EXPONENTS = np.array([15**i for i in range(6)])
+SUITES_ENCODED = tuple(range(len(SUITES)))
+EXPONENT = 15
+EVALUATION_TABLE_EXPONENTS = np.array([EXPONENT**i for i in range(6)])
 
 
 def encode_card(card:str) -> tuple[int, int]:
     rank, suite = card
-    rank_encoded = RANKS.index(rank)
-    suite_encoded = SUITES.index(suite)
+    rank_index = RANKS.index(rank)
+    suite_index = SUITES.index(suite)
+    rank_encoded = RANKS_ENCODED[rank_index]
+    suite_encoded = SUITES_ENCODED[suite_index]
     return rank_encoded, suite_encoded
 
 
 def decode_card(card:tuple[int, int]) -> str:
     rank, suite = card
-    index_rank_decoded = RANKS_ENCODED.index(rank)
-    index_suite_decoded = SUITES_ENCODED.index(suite)
+    index_rank_decoded = bisect_left(RANKS_ENCODED, rank)
+    index_suite_decoded = bisect_left(SUITES_ENCODED, suite)
     rank_decoded = RANKS[index_rank_decoded]
     suite_decoded = SUITES[index_suite_decoded]
     return str(rank_decoded) + str(suite_decoded)
@@ -42,7 +45,7 @@ def construct_deck() -> set:
     return set(encode_card(rank+suite) for rank in RANKS for suite in SUITES)
 
 
-class PokerHand(int, Enum):
+class PokerHand(int):
     ERROR = -1
     HighCard = 1
     Pair = 2
@@ -127,30 +130,51 @@ def sort_numpy_array(array: np.ndarray) -> np.ndarray:
     return array[sorted_indices]   
 
 
-def handle_same_kind(state, zero_count):
+def handle_same_kind(state: int, zero_count: int) -> tuple[int, int]:
+    """
+    returns best state depending on what zero_count is and previous state
+    aside from new state, returns code, what was changed
+    ret value is coded as follows:
+        - 0 for no change 
+        - 1 for simple ev1 state set
+        - 2 for simple ev2 state set
+        - 3 for ev2=ev1, ev1 = val
+    """
     if zero_count+1 == 2:
-        if state == PokerHand.HighCard: return PokerHand.Pair
-        if state == PokerHand.Pair: return PokerHand.TwoPair
-        if state == PokerHand.ThreeOfAKind: return PokerHand.FullHouse
+        if state == PokerHand.HighCard: return PokerHand.Pair, 1                # set ev1 to new pair rank
+        if state == PokerHand.Pair: return PokerHand.TwoPair, 3                 # if there already was a pair then new one will have higher rank, set ev2 = ev1, ev1 = val
+        if state == PokerHand.TwoPair: return PokerHand.TwoPair, 3              # if there already was a pair then new one will have higher rank, set ev2 = ev1, ev1 = val
+        if state == PokerHand.ThreeOfAKind: return PokerHand.FullHouse, 2       # if there is ThreeOfAKind on board then just set ev2 to pair val
+        if state == PokerHand.FullHouse: return PokerHand.FullHouse, 2          # if there is FullHouse then we just update the pair that makes it, so ev2 
     if zero_count+1 == 3:
-        if state == PokerHand.HighCard: return PokerHand.ThreeOfAKind
-        if state == PokerHand.Pair or state == PokerHand.ThreeOfAKind:
-            return PokerHand.FullHouse
-    if zero_count+1 == 4: return PokerHand.FourOfAKind
-    return state
+        if state == PokerHand.HighCard: return PokerHand.ThreeOfAKind, 1
+        if state == PokerHand.Pair: return PokerHand.FullHouse, 3
+        if state == PokerHand.ThreeOfAKind: return PokerHand.FullHouse, 3
+    if zero_count+1 == 4: return PokerHand.FourOfAKind, 1
+    return state, 0
 
 
-def interpret_sequence(ranks: np.ndarray) -> PokerHand:
+def interpret_sequence(ranks: np.ndarray) -> tuple[int, int, int]:
     best_hand = PokerHand.HighCard
     count_con_zero = 0
     count_con_one = 0
     last = ranks[0]
+    eval_rank_better = 0
+    eval_rank_lesser = 0
     for val in ranks[1:]:
         if val == last: 
             count_con_zero+=1
             last = val
             continue
-        best_hand = handle_same_kind(best_hand, count_con_zero)
+        best_hand, code = handle_same_kind(best_hand, count_con_zero)
+        if code == 1:
+            eval_rank_better = last
+        if code == 2:
+            eval_rank_lesser = last
+        if code == 3:
+            eval_rank_lesser = eval_rank_better
+            eval_rank_better = last
+
         count_con_zero = 0
 
         if val == last+1: 
@@ -161,131 +185,93 @@ def interpret_sequence(ranks: np.ndarray) -> PokerHand:
         # if it is not 0 or 1 then we check if we found Straight 
         if count_con_one+1 >= 5:
             best_hand = PokerHand.Straight
+            eval_rank_better = last
 
         count_con_one = 0
         last = val 
 
-    return best_hand
+    return best_hand, eval_rank_better, eval_rank_lesser
 
 
 def eval_high_card(ranks):
     kickers = ranks[-5:]
+    table = kickers * EVALUATION_TABLE_EXPONENTS[:-1]
+    eval = table.sum()
+    return eval
+
+
+def eval_pair(ranks, rank_of_the_same_kind) -> int:
+    eval = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
+    next_eval = -3
+    for i in range(7):
+        val = ranks[-i-1]
+        if val == rank_of_the_same_kind: continue
+        eval += val * EVALUATION_TABLE_EXPONENTS[next_eval]
+        next_eval -= 1
+        if next_eval == -6: break
+    return eval
+
+
+def eval_three_of_a_kind(ranks, rank_of_the_same_kind) -> int:
+    eval = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
+    next_eval = -3
+    for i in range(7):
+        val = ranks[-i-1]
+        if val == rank_of_the_same_kind: continue
+        eval += val * EVALUATION_TABLE_EXPONENTS[next_eval]
+        next_eval -= 1
+        if next_eval == -6: break
+    return eval
+
+
+def eval_two_pair(ranks, card1, card2) -> int:
     eval = 0
-    for i in range(1, 5+1):
-        eval += kickers[-i] * EVALUATION_TABLE_EXPONENTS[-i - 1]
-    return eval
-
-
-def eval_pair(ranks, consecutive_ranks_diff) -> int:
-    zero_mask = consecutive_ranks_diff == 0
-    zero_indexes = np.where(zero_mask)[0]
-    index_of_zero = zero_indexes[0]
-    rank_of_the_same_kind = ranks[index_of_zero]
-    kickers = ranks[~zero_mask][-2:]
-    eval = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
-    eval += kickers[-1] * EVALUATION_TABLE_EXPONENTS[-3]
-    eval += kickers[-2] * EVALUATION_TABLE_EXPONENTS[-4]
-    return eval
-
-
-def eval_three_of_a_kind(ranks, consecutive_ranks_diff) -> int:
-    zero_mask = consecutive_ranks_diff == 0
-    zero_indexes = np.where(zero_mask)[0]
-    index_of_zero = zero_indexes[0]
-    rank_of_the_same_kind = ranks[index_of_zero]
-    kickers = ranks[~zero_mask][-3:]
-    eval = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
-    eval += kickers[-1] * EVALUATION_TABLE_EXPONENTS[-3]
-    eval += kickers[-2] * EVALUATION_TABLE_EXPONENTS[-4]
-    eval += kickers[-3] * EVALUATION_TABLE_EXPONENTS[-5]
-    return eval
-
-
-def eval_two_pair(ranks, consecutive_ranks_diff) -> int:
-    zero_mask = consecutive_ranks_diff == 0
-    zero_indexes = np.where(zero_mask)[0]
-    index_of_higher_pair = zero_indexes[-1]
-    index_of_lower_pair = zero_indexes[-2]
-    higher_pair_rank = ranks[index_of_higher_pair]
-    lower_pair_rank = ranks[index_of_lower_pair]
-    kicker = ranks[~zero_mask][-1]
-    eval = higher_pair_rank * EVALUATION_TABLE_EXPONENTS[-2]
-    eval += lower_pair_rank * EVALUATION_TABLE_EXPONENTS[-3]
-    eval += kicker * EVALUATION_TABLE_EXPONENTS[-4]
+    eval += card1 * EVALUATION_TABLE_EXPONENTS[-2]
+    eval += card2 * EVALUATION_TABLE_EXPONENTS[-3]
+    for i in range(7):
+        val = ranks[-i-1]
+        if val in (card1, card2): continue
+        eval += val * EVALUATION_TABLE_EXPONENTS[-4]
+        break
     return eval
     
 
-def eval_straight(ranks, consecutive_ranks_diff) -> int:
-    not_zero = consecutive_ranks_diff != 0
-    not_one = consecutive_ranks_diff != 1
-    mask_not_0or1 = np.logical_and(not_zero, not_one)
-
-    index_of_termination = np.argmax(mask_not_0or1)
-    highest_rank = ranks[index_of_termination]
-    return highest_rank
+def eval_straight(card1) -> int:
+    return card1
 
 
-def eval_fullhouse(ranks, consecutive_ranks_diff) -> int:
-    """
-    have to consider several cases here: 
-        - aaabbcd (three of a kind first)
-        - aabbbcd (three of a kind second)
-        - aabbbcc (three of a kind surrounded by pairs)
-        - aaccbbb (three of a kind last)
-    """
-    zero_mask = np.where(consecutive_ranks_diff==0)[0]
-    last_elem = zero_mask[-1]
-    second_last = zero_mask[-2]
-    first_elem = zero_mask[-3]
-    if last_elem == second_last+1:
-        three = ranks[last_elem]
-        pair = ranks[first_elem]
-    else:
-        three = ranks[first_elem]
-        pair = ranks[last_elem]
-    evaluation = 1 * pair + 100 * three
-    return evaluation
+def eval_fullhouse(card1, card2) -> int:
+    eval = 0
+    eval += card1 * EVALUATION_TABLE_EXPONENTS[-2]
+    eval += card2 * EVALUATION_TABLE_EXPONENTS[-3]
+    return eval
 
 
-def eval_four_of_a_kind(ranks, consecutive_ranks_diff) -> int:
-    """
-    have to consider several cases here: 
-        - aaaabbc (there is more than one "same kind")
-        - bbaaaac (there is more than one "same kind")
-        - aaaabcd (there is not more than one "same kind")
-    """
-    zero_mask = np.where(consecutive_ranks_diff==0)[0]
-    last_elem = zero_mask[-1]
-    second_last = zero_mask[-2]
-    first_elem = zero_mask[-3]
-    if last_elem == second_last+1:
-        four = ranks[last_elem]
-    else:
-        four = ranks[first_elem]
-    return four
+def eval_four_of_a_kind(ranks, rank_of_the_same_kind) -> int:
+    eval = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
+    for i in range(7):
+        val = ranks[-i-1]
+        if val == rank_of_the_same_kind: continue
+        eval += val * EVALUATION_TABLE_EXPONENTS[-3]
+        break
+    return eval
 
 
 def eval_flush(ranks, suites, flush_suite) -> tuple[PokerHand, int]:
     flush_mask = np.where(suites == flush_suite)[0]
     ranks_in_flush = ranks[flush_mask]
     ranks_in_flush = np.append(ranks_in_flush, 127)
-    flush_rank_diff = np.diff(ranks_in_flush)
-    interpret = interpret_sequence(ranks_in_flush)
-    if interpret == PokerHand.Straight:
-        one_mask = np.where(flush_rank_diff==1)[0]
-        index_of_highest_rank = one_mask[-1]+1
-        highest_rank = ranks_in_flush[index_of_highest_rank]
+    interpret_state, highest_rank, _ = interpret_sequence(ranks_in_flush)
+    if interpret_state == PokerHand.Straight:
         return PokerHand.StraightFlush, highest_rank
     return PokerHand.Flush, ranks_in_flush[-1]
 
 
-def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
+def eval7cards(sorted_cards:np.ndarray) -> tuple[int, int]:
     ranks = sorted_cards[:,0]
     # insert ace encoded as 1 at the beggining if there is ase in the deck
     if ranks[-1] == ACE_ENCODED_LAST:
         ranks = np.insert(ranks, 0, ACE_ENCODED_ONE) 
-
-    ranks_tailed = np.append(ranks,127)
 
     suites = sorted_cards[:,1]
     suite_counts = np.zeros(4)
@@ -301,23 +287,23 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[PokerHand, int]:
     if flush_suite != -1:
         return eval_flush(ranks, suites, flush_suite)
 
-    consecutive_ranks_diff = np.diff(ranks_tailed)
-    state_interpreted = interpret_sequence(ranks_tailed)
+    ranks_tailed = np.append(ranks,127)
+    state_interpreted, better_rank, lesser_rank = interpret_sequence(ranks_tailed)
 
     if state_interpreted == PokerHand.HighCard:
         return PokerHand.HighCard, eval_high_card(ranks)
     if state_interpreted == PokerHand.Pair:
-        return PokerHand.Pair, eval_pair(ranks, consecutive_ranks_diff)
+        return PokerHand.Pair, eval_pair(ranks, better_rank)
     if state_interpreted == PokerHand.ThreeOfAKind:
-        return PokerHand.ThreeOfAKind, eval_three_of_a_kind(ranks, consecutive_ranks_diff)
+        return PokerHand.ThreeOfAKind, eval_three_of_a_kind(ranks, better_rank)
     if state_interpreted == PokerHand.TwoPair:
-        return PokerHand.TwoPair, eval_two_pair(ranks, consecutive_ranks_diff)
+        return PokerHand.TwoPair, eval_two_pair(ranks, better_rank, lesser_rank)
     if state_interpreted == PokerHand.Straight:
-        return PokerHand.Straight, eval_straight(ranks, consecutive_ranks_diff)
+        return PokerHand.Straight, eval_straight(better_rank)
     if state_interpreted == PokerHand.FullHouse:
-        return PokerHand.FullHouse, eval_fullhouse(ranks, consecutive_ranks_diff)
+        return PokerHand.FullHouse, eval_fullhouse(better_rank, lesser_rank)
     if state_interpreted == PokerHand.FourOfAKind:
-        return PokerHand.FourOfAKind, eval_four_of_a_kind(ranks, consecutive_ranks_diff)
+        return PokerHand.FourOfAKind, eval_four_of_a_kind(ranks, better_rank)
     return PokerHand.ERROR, -1
 
 
