@@ -193,6 +193,51 @@ def interpret_sequence(ranks: np.ndarray) -> tuple[int, int, int]:
     return best_hand, eval_rank_better, eval_rank_lesser
 
 
+def eval7cards(sorted_cards:np.ndarray) -> tuple[int, int]:
+    ranks = sorted_cards[:,0]
+    # insert ace encoded as 1 at the beggining if there is ase in the deck
+    if ranks[-1] == ACE_ENCODED_LAST:
+        ranks = np.insert(ranks, 0, ACE_ENCODED_ONE) 
+
+    suites = sorted_cards[:,1]
+    suite_counts = np.zeros(4)
+    for i in range(len(suites)):
+        c = suites[i]
+        suite_counts[c] += 1
+
+    flush_suite = -1
+    for i in range(4):
+        if suite_counts[i] >= 5:
+            flush_suite = i
+
+    if flush_suite != -1:
+        return eval_flush(ranks, suites, flush_suite)
+
+    ranks_tailed = np.append(ranks,127)
+    state_interpreted, better_rank, lesser_rank = interpret_sequence(ranks_tailed)
+
+    if state_interpreted == PokerHand.HighCard:
+        return PokerHand.HighCard, eval_high_card(ranks)
+    if state_interpreted == PokerHand.Pair:
+        return PokerHand.Pair, eval_pair(ranks, better_rank)
+    if state_interpreted == PokerHand.ThreeOfAKind:
+        return PokerHand.ThreeOfAKind, eval_three_of_a_kind(ranks, better_rank)
+    if state_interpreted == PokerHand.TwoPair:
+        return PokerHand.TwoPair, eval_two_pair(ranks, better_rank, lesser_rank)
+    if state_interpreted == PokerHand.Straight:
+        return PokerHand.Straight, eval_straight(better_rank)
+    if state_interpreted == PokerHand.FullHouse:
+        return PokerHand.FullHouse, eval_fullhouse(better_rank, lesser_rank)
+    if state_interpreted == PokerHand.FourOfAKind:
+        return PokerHand.FourOfAKind, eval_four_of_a_kind(ranks, better_rank)
+    return PokerHand.ERROR, -1
+
+
+def strength_of_hand(evaluation_of_7_cards):
+    hand, eval = evaluation_of_7_cards
+    return EVALUATION_TABLE_EXPONENTS[-1] * hand + eval
+
+
 def eval_high_card(ranks):
     kickers = ranks[-5:]
     table = kickers * EVALUATION_TABLE_EXPONENTS[:-1]
@@ -257,7 +302,7 @@ def eval_four_of_a_kind(ranks, rank_of_the_same_kind) -> int:
     return eval
 
 
-def eval_flush(ranks, suites, flush_suite) -> tuple[PokerHand, int]:
+def eval_flush(ranks, suites, flush_suite) -> tuple[int, int]:
     flush_mask = np.where(suites == flush_suite)[0]
     ranks_in_flush = ranks[flush_mask]
     ranks_in_flush = np.append(ranks_in_flush, 127)
@@ -265,49 +310,4 @@ def eval_flush(ranks, suites, flush_suite) -> tuple[PokerHand, int]:
     if interpret_state == PokerHand.Straight:
         return PokerHand.StraightFlush, highest_rank
     return PokerHand.Flush, ranks_in_flush[-1]
-
-
-def eval7cards(sorted_cards:np.ndarray) -> tuple[int, int]:
-    ranks = sorted_cards[:,0]
-    # insert ace encoded as 1 at the beggining if there is ase in the deck
-    if ranks[-1] == ACE_ENCODED_LAST:
-        ranks = np.insert(ranks, 0, ACE_ENCODED_ONE) 
-
-    suites = sorted_cards[:,1]
-    suite_counts = np.zeros(4)
-    for i in range(len(suites)):
-        c = suites[i]
-        suite_counts[c] += 1
-
-    flush_suite = -1
-    for i in range(4):
-        if suite_counts[i] >= 5:
-            flush_suite = i
-
-    if flush_suite != -1:
-        return eval_flush(ranks, suites, flush_suite)
-
-    ranks_tailed = np.append(ranks,127)
-    state_interpreted, better_rank, lesser_rank = interpret_sequence(ranks_tailed)
-
-    if state_interpreted == PokerHand.HighCard:
-        return PokerHand.HighCard, eval_high_card(ranks)
-    if state_interpreted == PokerHand.Pair:
-        return PokerHand.Pair, eval_pair(ranks, better_rank)
-    if state_interpreted == PokerHand.ThreeOfAKind:
-        return PokerHand.ThreeOfAKind, eval_three_of_a_kind(ranks, better_rank)
-    if state_interpreted == PokerHand.TwoPair:
-        return PokerHand.TwoPair, eval_two_pair(ranks, better_rank, lesser_rank)
-    if state_interpreted == PokerHand.Straight:
-        return PokerHand.Straight, eval_straight(better_rank)
-    if state_interpreted == PokerHand.FullHouse:
-        return PokerHand.FullHouse, eval_fullhouse(better_rank, lesser_rank)
-    if state_interpreted == PokerHand.FourOfAKind:
-        return PokerHand.FourOfAKind, eval_four_of_a_kind(ranks, better_rank)
-    return PokerHand.ERROR, -1
-
-
-def strength_of_hand(evaluation_of_7_cards):
-    hand, eval = evaluation_of_7_cards
-    return EVALUATION_TABLE_EXPONENTS[-1] * hand + eval
 
