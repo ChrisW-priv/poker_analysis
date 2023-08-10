@@ -1,4 +1,3 @@
-from math import comb
 import numpy as np
 from itertools import combinations
 from bisect import bisect_left
@@ -67,6 +66,35 @@ def assert_correctness(community_cards:list[str],
     assert(len(set(excluded_cards)) == len(excluded_cards))
 
 
+def calculate_for_all_possible_additions(deck, community_cards_encoded, whole_cards_encoded, table_addition) -> tuple[int, int]:
+    rest_of_deck = tuple(deck - set(table_addition))
+
+    full_table = community_cards_encoded + table_addition
+
+    our_seven_cards = np.array(full_table + whole_cards_encoded)
+    our_seven_cards = sort_numpy_array(our_seven_cards)
+    our_cards_evaluate = evaluate7cards(our_seven_cards)
+    our_cards_value = strength_of_hand(our_cards_evaluate)
+
+    win = 0
+    total = 0
+    for enemy_cards in combinations(rest_of_deck, 2):
+        enemy_seven_cards = np.array(full_table + enemy_cards)
+        enemy_seven_cards = sort_numpy_array(enemy_seven_cards)
+        enemy_cards_evaluate = evaluate7cards(enemy_seven_cards)
+        enemy_cards_value = strength_of_hand(enemy_cards_evaluate)
+        if our_cards_value >= enemy_cards_value:
+            win += 1
+        else:
+            pass
+            # # here we could add information on what specific hands beat us
+            # # for now we have a comment with print of what beats us
+            # print("enemy cards:", tuple(map(decode_card, enemy_cards)), 
+            #       "enemy evaluate:", enemy_cards_evaluate, 
+            #       "our evaluate:", our_cards_evaluate)
+        total += 1
+    return win, total
+
 def calculate_position(community_cards:list[str],
                        whole_cards:list[str],
                        excluded_cards:list[str]):
@@ -81,35 +109,15 @@ def calculate_position(community_cards:list[str],
     set_excluded_cards = set(excluded_cards_encoded)
     deck = deck - set_community_cards - set_whole_cards - set_excluded_cards
 
-    win = 0
+    winning = 0
     total = 0
-    for table_addition in combinations(deck, 5-len(community_cards)):
-        rest_of_deck = tuple(deck - set(table_addition))
+    unary = lambda addidion: calculate_for_all_possible_additions(deck, community_cards_encoded, whole_cards_encoded, addidion)
+    results = map(unary, combinations(deck, 5-len(community_cards)))
+    for win, tot in results:
+        winning += win
+        total += tot
 
-        full_table = community_cards_encoded + table_addition
-
-        our_seven_cards = np.array(full_table + whole_cards_encoded)
-        our_seven_cards = sort_numpy_array(our_seven_cards)
-        our_cards_evaluate = evaluate7cards(our_seven_cards)
-        our_cards_value = strength_of_hand(our_cards_evaluate)
-
-        for enemy_cards in combinations(rest_of_deck, 2):
-            enemy_seven_cards = np.array(full_table + enemy_cards)
-            enemy_seven_cards = sort_numpy_array(enemy_seven_cards)
-            enemy_cards_evaluate = evaluate7cards(enemy_seven_cards)
-            enemy_cards_value = strength_of_hand(enemy_cards_evaluate)
-            if our_cards_value >= enemy_cards_value:
-                win += 1
-            else:
-                pass
-                # # here we could add information on what specific hands beat us
-                # # for now we have a comment with print of what beats us
-                # print("enemy cards:", tuple(map(decode_card, enemy_cards)), 
-                #       "enemy evaluate:", enemy_cards_evaluate, 
-                #       "our evaluate:", our_cards_evaluate)
-            total += 1
-
-    return round(win * 100 / total, 2)
+    return round(winning * 100 / total, 2)
 
 
 def sort_numpy_array(array: np.ndarray) -> np.ndarray:
