@@ -79,13 +79,14 @@ def calculate_position(community_cards:list[str],
     assert(len(set(whole_cards)) == len(whole_cards))
     assert(len(set(excluded_cards)) == len(excluded_cards))
 
-    arr_community_cards = encode_cards_to_numpy(map(encode_card, community_cards))
-    arr_whole_cards = encode_cards_to_numpy(map(encode_card, whole_cards))
+    community_cards_encoded = tuple(map(encode_card, community_cards))
+    whole_cards_encoded = tuple(map(encode_card, whole_cards))
+    excluded_cards_encoded = map(encode_card, excluded_cards)
 
     deck = construct_deck()
-    set_community_cards = set(map(encode_card, community_cards))
-    set_whole_cards = set(map(encode_card, whole_cards))
-    set_excluded_cards = set(map(encode_card, excluded_cards))
+    set_community_cards = set(community_cards_encoded)
+    set_whole_cards = set(whole_cards_encoded)
+    set_excluded_cards = set(excluded_cards_encoded)
     deck = deck - set_community_cards - set_whole_cards - set_excluded_cards
 
     win = 0
@@ -95,19 +96,14 @@ def calculate_position(community_cards:list[str],
     for table_addition in combinations(deck, 5-len(community_cards)):
         rest_of_deck = tuple(deck - set(table_addition))
 
-        if len(community_cards) == 5:
-            full_table = arr_community_cards
-        else:
-            arr_table_addition = encode_cards_to_numpy(table_addition)
-            full_table = np.concatenate((arr_community_cards, arr_table_addition))
+        full_table = community_cards_encoded + table_addition
 
-        our_seven_cards = np.concatenate((full_table, arr_whole_cards))
+        our_seven_cards = np.array(full_table + whole_cards_encoded)
         our_cards_eval = eval7cards(our_seven_cards)
         our_cards_value = strength_of_hand(our_cards_eval)
 
         for enemy_cards in combinations(rest_of_deck, 2):
-            arr_enemy_cards = encode_cards_to_numpy(enemy_cards)
-            enemy_seven_cards = np.concatenate((full_table, arr_enemy_cards))
+            enemy_seven_cards = np.array(full_table + enemy_cards)
             enemy_cards_eval = eval7cards(enemy_seven_cards)
             enemy_cards_value = strength_of_hand(enemy_cards_eval)
             if our_cards_value >= enemy_cards_value:
@@ -233,12 +229,12 @@ def eval7cards(sorted_cards:np.ndarray) -> tuple[int, int]:
     return PokerHand.ERROR, -1
 
 
-def strength_of_hand(evaluation_of_7_cards):
+def strength_of_hand(evaluation_of_7_cards) -> int:
     hand, eval = evaluation_of_7_cards
     return EVALUATION_TABLE_EXPONENTS[-1] * hand + eval
 
 
-def eval_high_card(ranks):
+def eval_high_card(ranks) -> int:
     kickers = ranks[-5:]
     table = kickers * EVALUATION_TABLE_EXPONENTS[:-1]
     eval = table.sum()
