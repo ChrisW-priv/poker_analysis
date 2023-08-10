@@ -36,7 +36,7 @@ class TestEngine(unittest.TestCase):
         for idx, (cards, eval) in enumerate(cases, 1):
             with self.subTest(f"Test case {idx}: {' '.join(cards)}"):
                 cards = prep_cards(cards)
-                interpreted = poker_engine.eval7cards(cards)[0]
+                interpreted = poker_engine.evaluate7cards(cards)[0]
                 self.assertEqual(interpreted, eval, f"Expected: {eval}, Got: {interpreted}")
 
     def test_evaluation_of_same_hand(self):
@@ -69,8 +69,8 @@ class TestEngine(unittest.TestCase):
             with self.subTest(f"Test case {idx}: {cases[idx-1]}"):
                 smaller_hand = prep_cards(smaller)
                 greater_hand = prep_cards(greater)
-                interpreted_value_smaller = poker_engine.eval7cards(smaller_hand)
-                interpreted_value_greater = poker_engine.eval7cards(greater_hand)
+                interpreted_value_smaller = poker_engine.evaluate7cards(smaller_hand)
+                interpreted_value_greater = poker_engine.evaluate7cards(greater_hand)
                 smaller_hand_strength = poker_engine.strength_of_hand(interpreted_value_smaller)
                 greater_hand_strength = poker_engine.strength_of_hand(interpreted_value_greater)
                 self.assertLess(smaller_hand_strength, greater_hand_strength)
