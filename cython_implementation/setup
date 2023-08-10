@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# copy most recent version
+cp ../poker_engine.py ./poker_engine.pyx
+# change all python definitions to cython
+sed -E 's/def ([a-zA-Z_][a-zA-Z0-9_]*)\(([^)]*)\) -> ([^:]*):/cdef \3 \1(\2):/g' ./poker_engine.pyx -i
+# convert enum to cython enum
+sed -E 's/class ([a-zA-Z_][a-zA-Z0-9_]*)\(int\):/cdef enum \1:/g' ./poker_engine.pyx -i
+# correctly annotate the calculate_position function
+sed -E 's/def calculate_position\(/cpdef double calculate_position\(/' ./poker_engine.pyx -i
+# reduce cdef np.ndarray to cdef because it is not cython imported
+sed -E 's/cdef np.ndarray/cdef/' ./poker_engine.pyx -i
+
+# build cython
+python3 setup.py build_ext --inplace
+
