@@ -1,6 +1,8 @@
 import numpy as np
 from itertools import combinations
 from bisect import bisect_left
+from multiprocessing import Pool
+from functools import partial
 
 # 2,3,4,5,...9,t,j,k,a
 RANKS = tuple(str(x) for x in range(2,9+1)) + ('t', 'j', 'q', 'k', 'a')
@@ -95,6 +97,7 @@ def calculate_for_all_possible_additions(deck, community_cards_encoded, whole_ca
         total += 1
     return win, total
 
+
 def calculate_position(community_cards:list[str],
                        whole_cards:list[str],
                        excluded_cards:list[str]):
@@ -108,14 +111,18 @@ def calculate_position(community_cards:list[str],
     set_whole_cards = set(whole_cards_encoded)
     set_excluded_cards = set(excluded_cards_encoded)
     deck = deck - set_community_cards - set_whole_cards - set_excluded_cards
-
+    
     winning = 0
     total = 0
-    unary = lambda addidion: calculate_for_all_possible_additions(deck, community_cards_encoded, whole_cards_encoded, addidion)
-    results = map(unary, combinations(deck, 5-len(community_cards)))
-    for win, tot in results:
-        winning += win
-        total += tot
+
+    unary = partial(calculate_for_all_possible_additions, deck, community_cards_encoded, whole_cards_encoded)
+
+    with Pool() as pool:
+        results = pool.imap_unordered(unary, combinations(deck, 5-len(community_cards)))
+
+        for win, tot in results:
+            winning += win
+            total += tot
 
     return round(winning * 100 / total, 2)
 
