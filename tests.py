@@ -2,12 +2,15 @@
 
 import unittest
 import poker_engine
-import numpy as np
 
 
 def prep_cards(cards):
-    cards = np.array([poker_engine.encode_card(card) for card in cards])
-    return poker_engine.sort_numpy_array(cards)
+    ret = bytearray(8)
+    for i, card in enumerate(
+            sorted([poker_engine.encode_card(card) for card in cards]), 
+            start=1):
+        ret[i] = card
+    return ret    
 
 
 class TestEngine(unittest.TestCase):
