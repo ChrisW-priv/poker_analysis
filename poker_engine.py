@@ -138,7 +138,10 @@ def calculate_position(community_cards:list[str],
     return round(winning * 100 / total, 2)
 
 
-def handle_same_kind(state: int, value, better_rank, lesser_rank) -> tuple[int, int]:
+def handle_same_kind(state: int, 
+                     value: int,
+                     better_rank: int,
+                     lesser_rank: int) -> tuple[int, int]:
     """
     returns best state depending on what zero_count is and previous state
     aside from new state, returns code, what was changed
@@ -237,19 +240,19 @@ def evaluate7cards(sorted_cards: bytearray) -> tuple[int, int]:
     return PokerHand.ERROR, -1
 
 
-def strength_of_hand(evaluateuation_of_7_cards) -> int:
-    hand, evaluate = evaluateuation_of_7_cards
+def strength_of_hand(evaluation_of_7_cards: tuple[int, int]) -> int:
+    hand, evaluate = evaluation_of_7_cards
     return EVALUATION_TABLE_EXPONENTS[-1] * hand + evaluate
 
 
-def evaluate_high_card(ranks) -> int:
+def evaluate_high_card(ranks: bytearray) -> int:
     evaluate = 0
     for i in range(5):
         evaluate += ranks[-1-i] * EVALUATION_TABLE_EXPONENTS[-i-2]
     return evaluate
 
 
-def evaluate_pair(ranks, rank_of_the_same_kind) -> int:
+def evaluate_pair(ranks: bytearray, rank_of_the_same_kind: int) -> int:
     evaluate = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
     next_evaluate = -3
     for i in range(7):
@@ -261,7 +264,7 @@ def evaluate_pair(ranks, rank_of_the_same_kind) -> int:
     return evaluate
 
 
-def evaluate_three_of_a_kind(ranks, rank_of_the_same_kind) -> int:
+def evaluate_three_of_a_kind(ranks: bytearray, rank_of_the_same_kind: int) -> int:
     evaluate = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
     next_evaluate = -3
     for i in range(7):
@@ -273,7 +276,7 @@ def evaluate_three_of_a_kind(ranks, rank_of_the_same_kind) -> int:
     return evaluate
 
 
-def evaluate_two_pair(ranks, card1, card2) -> int:
+def evaluate_two_pair(ranks: bytearray, card1: int, card2: int) -> int:
     evaluate = 0
     evaluate += card1 * EVALUATION_TABLE_EXPONENTS[-2]
     evaluate += card2 * EVALUATION_TABLE_EXPONENTS[-3]
@@ -286,18 +289,18 @@ def evaluate_two_pair(ranks, card1, card2) -> int:
     return evaluate
     
 
-def evaluate_straight(card1) -> int:
+def evaluate_straight(card1: int) -> int:
     return card1
 
 
-def evaluate_fullhouse(card1, card2) -> int:
+def evaluate_fullhouse(card1: int, card2: int) -> int:
     evaluate = 0
     evaluate += card1 * EVALUATION_TABLE_EXPONENTS[-2]
     evaluate += card2 * EVALUATION_TABLE_EXPONENTS[-3]
     return evaluate
 
 
-def evaluate_four_of_a_kind(ranks, rank_of_the_same_kind) -> int:
+def evaluate_four_of_a_kind(ranks: bytearray, rank_of_the_same_kind: int) -> int:
     evaluate = rank_of_the_same_kind * EVALUATION_TABLE_EXPONENTS[-2]
     index = -1
     if ranks[-1] == rank_of_the_same_kind: 
@@ -307,21 +310,26 @@ def evaluate_four_of_a_kind(ranks, rank_of_the_same_kind) -> int:
     return evaluate
 
 
-def evaluate_flush(ranks, suites, flush_suite) -> tuple[int, int]:
-    last = next(ranks[i] for i, suite in enumerate(suites) if suite == flush_suite)
+def evaluate_flush(ranks: bytearray, 
+                   suites: bytearray, 
+                   flush_suite: int) -> tuple[int, int]:
+    ranks_in_flush = bytearray(
+            ranks[i] for i, suite in enumerate(suites) 
+            if suite == flush_suite)
     consec = 0
     ret = 0
-    for i, suite in enumerate(suites):
-        if suite == flush_suite:
-            rank = ranks[i]
-            if rank == last + 1:
-                consec += 1
-                if consec >= 4:
-                    ret = rank
-            else: consec = 0
-            last = rank
-
+    last = ranks_in_flush[0]
+    for rank in ranks_in_flush[1:]:
+        if rank == last + 1:
+            consec += 1
+            if consec >= 4:
+                ret = rank
+        else: consec = 0
+        last = rank
     if ret:
         return PokerHand.StraightFlush, ret
-    return PokerHand.Flush, last
+    evaluate = 0
+    for i in range(5):
+        evaluate += ranks[-1-i] * EVALUATION_TABLE_EXPONENTS[-i-2]
+    return PokerHand.Flush, evaluate
 
